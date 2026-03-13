@@ -10,7 +10,7 @@
 // ============================================================
 
 window.EMAILJS_CONFIG = {
-  publicKey:        "M9Bx1dDHhqoRm-oA_",
+  publicKey:        "1hHEiw6-1DeAIyk-Z",
   serviceId:        "service_21051wn",         // e.g. "service_abc123"
   adminTemplateId:  "template_83qjd9w",  // e.g. "template_newbooking"
   riderTemplateId:  "template_ket4ln9",  // e.g. "template_confirmed"
@@ -18,7 +18,7 @@ window.EMAILJS_CONFIG = {
 };
 
 // Initialise EmailJS with your public key
-if (window.EMAILJS_CONFIG.publicKey !== "REPLACE_WITH_YOUR_EMAILJS_PUBLIC_KEY") {
+if (window.EMAILJS_CONFIG.publicKey !== "1hHEiw6-1DeAIyk-Z") {
   emailjs.init({ publicKey: window.EMAILJS_CONFIG.publicKey });
 } else {
   console.warn("EmailJS not configured — email notifications are disabled.");

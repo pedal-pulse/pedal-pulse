@@ -11,7 +11,7 @@
 
 window.EMAILJS_CONFIG = {
   publicKey:        "1hHEiw6-1DeAIyk-Z",
-  serviceId:        "service_21051wn",         // e.g. "service_abc123"
+  serviceId:        "service_k645job",         // e.g. "service_abc123"
   adminTemplateId:  "template_83qjd9w",  // e.g. "template_newbooking"
   riderTemplateId:  "template_ket4ln9",  // e.g. "template_confirmed"
   adminEmail:       "pedalpulse.com@gmail.com",

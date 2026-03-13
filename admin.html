@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PedalPulse — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --deep: #111418;
+    --card: #161b22;
+    --border: #2a3040;
+    --lime: #c8f53a;
+    --orange: #ff6b35;
+    --white: #f0ede6;
+    --muted: #8a9ab5;
+    --danger: #ff4757;
+    --success: #2ed573;
+    --pending: #ffa502;
+    --sidebar-w: 240px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+
+  /* ─── LOGIN SCREEN ─── */
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem;
+    width: 360px;
+    text-align: center;
+  }
+
+  .login-logo {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2rem;
+    color: var(--lime);
+    margin-bottom: 0.2rem;
+  }
+
+  .login-logo span { color: var(--orange); }
+
+  .login-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+  }
+
+  .login-box input {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--white);
+    padding: 0.8rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .login-box input:focus { border-color: var(--lime); }
+
+  .login-btn {
+    width: 100%;
+    background: var(--lime);
+    color: var(--black);
+    border: none;
+    border-radius: 6px;
+    padding: 0.85rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 0.4rem;
+  }
+
+  .login-btn:hover { opacity: 0.85; }
+  .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--deep);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .logo {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.3rem;
+    color: var(--lime);
+  }
+
+  .sidebar-logo .logo span { color: var(--orange); }
+  .sidebar-logo p { font-size: 0.7rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+  nav.side-nav { padding: 1rem 0; flex: 1; }
+
+  .nav-section {
+    padding: 0.5rem 1rem;
+    font-size: 0.62rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+  }
+
+  .side-link {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .side-link:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+  .side-link.active { color: var(--lime); background: rgba(200,245,58,0.08); border-right: 2px solid var(--lime); }
+
+  .side-link .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .badge-count {
+    margin-left: auto;
+    background: var(--orange);
+    color: var(--black);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .topbar h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+  .admin-pill {
+    background: rgba(200,245,58,0.1);
+    border: 1px solid rgba(200,245,58,0.3);
+    color: var(--lime);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  .content { padding: 2rem; flex: 1; }
+
+  /* ─── PANELS ─── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.3rem 1.5rem;
+  }
+
+  .stat-card .label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-card .num {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2.2rem;
+    color: var(--white);
+    margin-top: 0.3rem;
+    line-height: 1;
+  }
+
+  .stat-card .sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .stat-card.highlight .num { color: var(--lime); }
+  .stat-card.warn .num { color: var(--pending); }
+  .stat-card.danger-card .num { color: var(--danger); }
+
+  /* ─── TABLES ─── */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .table-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-row select,
+  .filter-row input {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    text-align: left;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: var(--deep);
+    font-weight: 600;
+  }
+
+  td {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.pending { background: rgba(255,165,2,0.15); color: var(--pending); }
+  .status-badge.confirmed { background: rgba(46,213,115,0.15); color: var(--success); }
+  .status-badge.rejected { background: rgba(255,71,87,0.15); color: var(--danger); }
+  .status-badge.cancelled { background: rgba(138,154,181,0.15); color: var(--muted); }
+
+  .action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    margin-right: 0.3rem;
+  }
+
+  .action-btn.confirm { border-color: rgba(200,245,58,0.4); color: var(--lime); }
+  .action-btn.confirm:hover { background: rgba(200,245,58,0.1); }
+  .action-btn.reject { border-color: rgba(255,71,87,0.4); color: var(--danger); }
+  .action-btn.reject:hover { background: rgba(255,71,87,0.1); }
+  .action-btn:hover { color: var(--white); border-color: var(--muted); }
+
+  .ref-code {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    color: var(--lime);
+    font-weight: 600;
+  }
+
+  /* ─── AVAILABILITY MANAGER ─── */
+  .avail-container {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .avail-cal-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .avail-edit {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .avail-edit h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.2rem;
+  }
+
+  .slot-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .slot-editor-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .slot-editor-row input {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--white);
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    flex: 1;
+  }
+
+  .slot-editor-row input:focus { border-color: var(--lime); }
+
+  .remove-slot {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--danger);
+    width: 28px; height: 28px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .remove-slot:hover { background: rgba(255,71,87,0.1); }
+
+  .add-slot-btn {
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .add-slot-btn:hover { border-color: var(--lime); color: var(--lime); }
+
+  .block-day-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .block-day-check input { width: auto; accent-color: var(--danger); }
+
+  /* ─── CALENDAR (admin version) ─── */
+  .a-cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .a-cal-header h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .a-cal-nav {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 28px; height: 28px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+
+  .a-cal-nav:hover { border-color: var(--lime); color: var(--lime); }
+
+  .a-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+
+  .a-cal-day-label {
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.2rem 0;
+  }
+
+  .a-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    position: relative;
+  }
+
+  .a-cal-day.other-month { opacity: 0.2; pointer-events: none; }
+  .a-cal-day.today { border-color: var(--lime); }
+  .a-cal-day.has-custom { background: rgba(200,245,58,0.1); }
+  .a-cal-day.blocked { background: rgba(255,71,87,0.08); color: var(--danger); }
+  .a-cal-day.has-bookings::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .a-cal-day.selected { background: var(--lime) !important; color: var(--black) !important; font-weight: 700; }
+  .a-cal-day:not(.other-month):hover { background: var(--border); }
+
+  /* ─── NOTICE ─── */
+  .notice {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .notice.info { background: rgba(200,245,58,0.07); border: 1px solid rgba(200,245,58,0.2); color: var(--lime); }
+  .notice.warn { background: rgba(255,165,2,0.07); border: 1px solid rgba(255,165,2,0.2); color: var(--pending); }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    background: var(--success);
+    color: var(--black);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    z-index: 500;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: var(--danger); color: var(--white); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 90%;
+    transform: translateY(20px);
+    transition: transform 0.25s;
+  }
+
+  .modal-overlay.active .modal { transform: translateY(0); }
+
+  .modal h3 {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .k { color: var(--muted); }
+
+  .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+  .modal-actions button { flex: 1; }
+
+  .btn-success {
+    background: var(--success);
+    color: var(--black);
+    border: none;
+    padding: 0.7rem;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-success:hover { opacity: 0.85; }
+
+  .btn-danger {
+    background: var(--danger);
+    color: var(--white);
+    border: none;
+    padding: 0.7rem;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-danger:hover { opacity: 0.85; }
+
+  .btn-neutral {
+    background: var(--deep);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.7rem;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-neutral:hover { color: var(--white); }
+
+  .btn-lime {
+    background: var(--lime);
+    color: var(--black);
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-lime:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Pedal<span>Pulse</span></div>
+    <p class="login-sub">Admin Access Only</p>
+    <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="login-btn" id="loginBtn">Login →</button>
+    <p class="login-error" id="loginError" style="display:none">Invalid credentials. Try again.</p>
+    <p style="font-size:0.7rem;color:var(--muted);margin-top:1rem">Demo: admin / pedalpulse2024</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo">Pedal<span>Pulse</span></div>
+    <p>Admin Dashboard</p>
+  </div>
+  <nav class="side-nav">
+    <div class="nav-section">Overview</div>
+    <button class="side-link active" onclick="showPanel('dashboard')">
+      <span class="icon">📊</span> Dashboard
+    </button>
+
+    <div class="nav-section">Bookings</div>
+    <button class="side-link" onclick="showPanel('bookings')">
+      <span class="icon">📋</span> All Bookings
+      <span class="badge-count" id="pendingBadge">0</span>
+    </button>
+    <button class="side-link" onclick="showPanel('pending')">
+      <span class="icon">⏳</span> Pending Approval
+    </button>
+
+    <div class="nav-section">Manage</div>
+    <button class="side-link" onclick="showPanel('availability')">
+      <span class="icon">📅</span> Availability
+    </button>
+    <button class="side-link" onclick="showPanel('bikes')">
+      <span class="icon">🚲</span> Bikes Fleet
+    </button>
+
+    <div class="nav-section">Site</div>
+    <button class="side-link" onclick="window.open('index.html','_blank')">
+      <span class="icon">🌐</span> View Website ↗
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="side-link" id="logoutBtn" style="color:var(--danger);">
+      <span class="icon">🚪</span> Logout
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="panelTitle">Dashboard</h1>
+    <div class="topbar-right">
+      <span class="admin-pill">🔐 Eliud Mwangi</span>
+      <button class="logout-btn" id="logoutBtn2">Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ─── DASHBOARD PANEL ─── -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-row">
+        <div class="stat-card highlight">
+          <div class="label">Total Bookings</div>
+          <div class="num" id="stat-total">0</div>
+          <div class="sub">All time</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="label">Pending Review</div>
+          <div class="num" id="stat-pending">0</div>
+          <div class="sub">Awaiting confirmation</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Confirmed</div>
+          <div class="num" id="stat-confirmed">0</div>
+          <div class="sub">Upcoming sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">This Week</div>
+          <div class="num" id="stat-week">0</div>
+          <div class="sub">Bookings this week</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Recent Bookings</h3>
+          <button class="btn-lime" onclick="showPanel('bookings')" style="padding:0.4rem 1rem;font-size:0.8rem">View All →</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Client</th>
+              <th>Date & Time</th>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="recentTableBody">
+            <tr><td colspan="6"><div class="empty-state"><span class="icon">📭</span>No bookings yet</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── ALL BOOKINGS PANEL ─── -->
+    <div class="panel" id="panel-bookings">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>All Bookings</h3>
+          <div class="filter-row">
+            <select id="filterStatus" onchange="renderBookingsTable()">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="rejected">Rejected</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="Search name / ref..." oninput="renderBookingsTable()">
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Client</th>
+              <th>Phone</th>
+              <th>Date & Time</th>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="allBookingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── PENDING PANEL ─── -->
+    <div class="panel" id="panel-pending">
+      <div class="notice info">⏳ These bookings are awaiting your confirmation. Confirm to mark the slot as booked.</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Pending Approval</h3>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Client</th>
+              <th>Phone / Email</th>
+              <th>Date & Time</th>
+              <th>Service</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pendingBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── AVAILABILITY PANEL ─── -->
+    <div class="panel" id="panel-availability">
+      <div class="notice warn">💡 By default, weekdays have 5PM & 6:30PM slots. Saturdays have a 6:30AM group ride + 9AM private. Use this panel to customise or block days.</div>
+      <div class="avail-container">
+        <div class="avail-cal-wrap">
+          <div class="a-cal-header">
+            <button class="a-cal-nav" id="aCalPrev">‹</button>
+            <h4 id="aCalTitle">March 2026</h4>
+            <button class="a-cal-nav" id="aCalNext">›</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px">
+            <div class="a-cal-day-label">Su</div>
+            <div class="a-cal-day-label">Mo</div>
+            <div class="a-cal-day-label">Tu</div>
+            <div class="a-cal-day-label">We</div>
+            <div class="a-cal-day-label">Th</div>
+            <div class="a-cal-day-label">Fr</div>
+            <div class="a-cal-day-label" style="color:var(--orange)">Sa</div>
+          </div>
+          <div class="a-cal-grid" id="aCalGrid"></div>
+          <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap">
+            <div class="legend-item" style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--lime)"></div>Custom slots</div>
+            <div class="legend-item" style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--danger)"></div>Blocked</div>
+            <div class="legend-item" style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div>Has bookings</div>
+          </div>
+        </div>
+
+        <div class="avail-edit">
+          <h3 id="availDateTitle">Select a date to edit</h3>
+
+          <div id="availEditorArea" style="display:none">
+            <label class="block-day-check">
+              <input type="checkbox" id="blockDayCheck"> Block this entire day (unavailable)
+            </label>
+
+            <p style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Time Slots</p>
+            <div class="slot-editor" id="slotEditorList"></div>
+            <button class="add-slot-btn" id="addSlotBtn">+ Add Time Slot</button>
+
+            <div style="display:flex;gap:0.8rem;margin-top:1.5rem">
+              <button class="btn-lime" id="saveAvailBtn">Save Changes</button>
+              <button class="btn-neutral" id="resetAvailBtn">Reset to Default</button>
+            </div>
+          </div>
+
+          <div id="availPlaceholder">
+            <div class="empty-state">
+              <span class="icon">📅</span>
+              <p>Click a date on the calendar to manage its availability</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── BIKES PANEL ─── -->
+    <div class="panel" id="panel-bikes">
+      <div class="notice info">🚲 Manage your bike fleet availability and rental pricing.</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Bike Fleet</h3>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Bike</th>
+              <th>Type</th>
+              <th>Half Day Price</th>
+              <th>Full Day Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bikesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOOKING DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <h3>Booking Details</h3>
+    <div id="modalContent"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── AUTH ──────────────────────────────────────
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'pedalpulse2024';
+
+  function checkAuth() {
+    return sessionStorage.getItem('pp_admin') === '1';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      sessionStorage.setItem('pp_admin', '1');
+      document.getElementById('loginScreen').style.display = 'none';
+      init();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  });
+
+  document.getElementById('loginUser').addEventListener('keypress', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+  document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+
+  function logout() {
+    sessionStorage.removeItem('pp_admin');
+    location.reload();
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('logoutBtn2').addEventListener('click', logout);
+
+  if (checkAuth()) {
+    document.getElementById('loginScreen').style.display = 'none';
+    init();
+  }
+
+  // ─── DATA ─────────────────────────────────────
+  function getBookings() {
+    return JSON.parse(localStorage.getItem('pp_bookings') || '[]');
+  }
+
+  function saveBookings(b) {
+    localStorage.setItem('pp_bookings', JSON.stringify(b));
+  }
+
+  function getAvailability() {
+    return JSON.parse(localStorage.getItem('pp_availability') || '{}');
+  }
+
+  function saveAvailability(a) {
+    localStorage.setItem('pp_availability', JSON.stringify(a));
+  }
+
+  function getBikeFleet() {
+    const stored = localStorage.getItem('pp_bikes');
+    if (stored) return JSON.parse(stored);
+    return [
+      { id: 1, name: 'Road Racer', type: 'Road', halfDay: 1200, fullDay: 2000, status: 'available', emoji: '🚴' },
+      { id: 2, name: 'Hybrid Cruiser', type: 'Hybrid', halfDay: 800, fullDay: 1400, status: 'available', emoji: '🚵' },
+      { id: 3, name: 'Mountain Bike', type: 'MTB', halfDay: 1000, fullDay: 1700, status: 'available', emoji: '🏔️' },
+    ];
+  }
+
+  function saveBikeFleet(f) {
+    localStorage.setItem('pp_bikes', JSON.stringify(f));
+  }
+
+  // ─── NAVIGATION ────────────────────────────────
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+
+    const titles = {
+      dashboard: 'Dashboard',
+      bookings: 'All Bookings',
+      pending: 'Pending Approval',
+      availability: 'Manage Availability',
+      bikes: 'Bike Fleet'
+    };
+
+    document.getElementById('panelTitle').textContent = titles[name] || name;
+
+    // Highlight sidebar link
+    document.querySelectorAll('.side-link').forEach(l => {
+      if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(name)) {
+        l.classList.add('active');
+      }
+    });
+
+    if (name === 'bookings') renderBookingsTable();
+    if (name === 'pending') renderPendingTable();
+    if (name === 'bikes') renderBikesTable();
+    if (name === 'availability') renderAdminCalendar();
+  }
+
+  // ─── TOAST ─────────────────────────────────────
+  function showToast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (error ? ' error' : '');
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // ─── INIT ──────────────────────────────────────
+  function init() {
+    updateStats();
+    renderDashboardTable();
+    updatePendingBadge();
+  }
+
+  function updateStats() {
+    const bookings = getBookings();
+    const now = new Date();
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay());
+
+    document.getElementById('stat-total').textContent = bookings.length;
+    document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 'pending').length;
+    document.getElementById('stat-confirmed').textContent = bookings.filter(b => b.status === 'confirmed').length;
+    document.getElementById('stat-week').textContent = bookings.filter(b => {
+      const d = new Date(b.created);
+      return d >= weekStart;
+    }).length;
+  }
+
+  function updatePendingBadge() {
+    const count = getBookings().filter(b => b.status === 'pending').length;
+    document.getElementById('pendingBadge').textContent = count;
+    document.getElementById('pendingBadge').style.display = count > 0 ? '' : 'none';
+  }
+
+  // ─── BOOKING ROW HTML ──────────────────────────
+  function bookingRow(b, cols = 'standard') {
+    const statusMap = { pending: 'pending', confirmed: 'confirmed', rejected: 'rejected', cancelled: 'cancelled' };
+    const statusBadge = `<span class="status-badge ${b.status}">${b.status}</span>`;
+
+    const actions = `
+      ${b.status === 'pending' ? `<button class="action-btn confirm" onclick="quickAction('${b.ref}','confirmed')">✓ Confirm</button>` : ''}
+      ${b.status === 'pending' ? `<button class="action-btn reject" onclick="quickAction('${b.ref}','rejected')">✗ Reject</button>` : ''}
+      <button class="action-btn" onclick="openDetail('${b.ref}')">View</button>
+    `;
+
+    if (cols === 'pending') {
+      return `<tr>
+        <td><span class="ref-code">${b.ref}</span></td>
+        <td>${b.name}</td>
+        <td>${b.phone}<br><span style="font-size:0.72rem;color:var(--muted)">${b.email || '—'}</span></td>
+        <td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td>
+        <td>${b.service}</td>
+        <td style="font-size:0.8rem;color:var(--muted)">${b.notes || '—'}</td>
+        <td>${actions}</td>
+      </tr>`;
+    }
+
+    if (cols === 'all') {
+      return `<tr>
+        <td><span class="ref-code">${b.ref}</span></td>
+        <td>${b.name}</td>
+        <td>${b.phone}</td>
+        <td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td>
+        <td>${b.service}</td>
+        <td>${statusBadge}</td>
+        <td>${actions}</td>
+      </tr>`;
+    }
+
+    // Standard (dashboard recent)
+    return `<tr>
+      <td><span class="ref-code">${b.ref}</span></td>
+      <td>${b.name}</td>
+      <td>${b.date} ${b.time}</td>
+      <td>${b.service}</td>
+      <td>${statusBadge}</td>
+      <td>${actions}</td>
+    </tr>`;
+  }
+
+  function renderDashboardTable() {
+    const tbody = document.getElementById('recentTableBody');
+    const bookings = getBookings().slice(-8).reverse();
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><span class="icon">📭</span><p>No bookings yet. Share your site!</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => bookingRow(b)).join('');
+  }
+
+  function renderBookingsTable() {
+    const tbody = document.getElementById('allBookingsBody');
+    const statusFilter = document.getElementById('filterStatus').value;
+    const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+
+    let bookings = getBookings().reverse();
+    if (statusFilter) bookings = bookings.filter(b => b.status === statusFilter);
+    if (searchFilter) bookings = bookings.filter(b =>
+      b.name.toLowerCase().includes(searchFilter) ||
+      b.ref.toLowerCase().includes(searchFilter) ||
+      b.service.toLowerCase().includes(searchFilter)
+    );
+
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><span class="icon">🔍</span><p>No bookings match your filter</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => bookingRow(b, 'all')).join('');
+  }
+
+  function renderPendingTable() {
+    const tbody = document.getElementById('pendingBody');
+    const bookings = getBookings().filter(b => b.status === 'pending').reverse();
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><span class="icon">🎉</span><p>All caught up! No pending bookings.</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => bookingRow(b, 'pending')).join('');
+  }
+
+  // ─── ACTIONS ───────────────────────────────────
+  window.quickAction = function(ref, status) {
+    const bookings = getBookings();
+    const idx = bookings.findIndex(b => b.ref === ref);
+    if (idx === -1) return;
+    bookings[idx].status = status;
+    bookings[idx].updatedAt = new Date().toISOString();
+    saveBookings(bookings);
+    showToast(status === 'confirmed' ? '✅ Booking confirmed!' : '❌ Booking rejected');
+    updateStats();
+    updatePendingBadge();
+    renderDashboardTable();
+    renderBookingsTable();
+    renderPendingTable();
+  };
+
+  window.openDetail = function(ref) {
+    const b = getBookings().find(x => x.ref === ref);
+    if (!b) return;
+
+    document.getElementById('modalContent').innerHTML = `
+      <div class="detail-row"><span class="k">Reference</span><span class="ref-code">${b.ref}</span></div>
+      <div class="detail-row"><span class="k">Status</span><span class="status-badge ${b.status}">${b.status}</span></div>
+      <div class="detail-row"><span class="k">Name</span><span>${b.name}</span></div>
+      <div class="detail-row"><span class="k">Phone</span><span>${b.phone}</span></div>
+      <div class="detail-row"><span class="k">Email</span><span>${b.email || '—'}</span></div>
+      <div class="detail-row"><span class="k">Date</span><span>${b.date}</span></div>
+      <div class="detail-row"><span class="k">Time</span><span>${b.time}</span></div>
+      <div class="detail-row"><span class="k">Service</span><span>${b.service}</span></div>
+      <div class="detail-row"><span class="k">Notes</span><span>${b.notes || '—'}</span></div>
+      <div class="detail-row"><span class="k">Submitted</span><span>${new Date(b.created).toLocaleString()}</span></div>
+    `;
+
+    const actions = document.getElementById('modalActions');
+    actions.innerHTML = '';
+
+    if (b.status === 'pending') {
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 'btn-success';
+      confirmBtn.textContent = '✓ Confirm';
+      confirmBtn.onclick = () => { quickAction(ref, 'confirmed'); closeModal(); };
+
+      const rejectBtn = document.createElement('button');
+      rejectBtn.className = 'btn-danger';
+      rejectBtn.textContent = '✗ Reject';
+      rejectBtn.onclick = () => { quickAction(ref, 'rejected'); closeModal(); };
+
+      actions.appendChild(confirmBtn);
+      actions.appendChild(rejectBtn);
+    }
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'btn-neutral';
+    closeBtn.textContent = 'Close';
+    closeBtn.onclick = closeModal;
+    actions.appendChild(closeBtn);
+
+    document.getElementById('detailModal').classList.add('active');
+  };
+
+  function closeModal() {
+    document.getElementById('detailModal').classList.remove('active');
+  }
+
+  document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ─── AVAILABILITY ──────────────────────────────
+  let aCalYear = 2026, aCalMonth = 2;
+  let selectedAvailDate = null;
+
+  function renderAdminCalendar() {
+    const grid = document.getElementById('aCalGrid');
+    const title = document.getElementById('aCalTitle');
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+
+    title.textContent = `${months[aCalMonth]} ${aCalYear}`;
+    grid.innerHTML = '';
+
+    const firstDay = new Date(aCalYear, aCalMonth, 1).getDay();
+    const daysInMonth = new Date(aCalYear, aCalMonth + 1, 0).getDate();
+    const daysInPrev = new Date(aCalYear, aCalMonth, 0).getDate();
+    const availability = getAvailability();
+    const bookings = getBookings();
+
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const d = document.createElement('div');
+      d.className = 'a-cal-day other-month';
+      d.textContent = daysInPrev - i;
+      grid.appendChild(d);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${aCalYear}-${String(aCalMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const d = document.createElement('div');
+      d.className = 'a-cal-day';
+      d.textContent = day;
+
+      const avail = availability[dateStr];
+      if (avail !== undefined) {
+        if (avail === null || (Array.isArray(avail) && avail.length === 0)) {
+          d.classList.add('blocked');
+        } else {
+          d.classList.add('has-custom');
+        }
+      }
+
+      const hasBookings = bookings.some(b => b.date === dateStr && b.status !== 'cancelled');
+      if (hasBookings) d.classList.add('has-bookings');
+
+      const todayObj = new Date();
+      const dObj = new Date(dateStr + 'T00:00:00');
+      if (dObj.toDateString() === todayObj.toDateString()) d.classList.add('today');
+      if (dateStr === selectedAvailDate) d.classList.add('selected');
+
+      d.addEventListener('click', () => selectAvailDate(dateStr));
+      grid.appendChild(d);
+    }
+
+    const total = firstDay + daysInMonth;
+    const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let i = 1; i <= remaining; i++) {
+      const d = document.createElement('div');
+      d.className = 'a-cal-day other-month';
+      d.textContent = i;
+      grid.appendChild(d);
+    }
+  }
+
+  document.getElementById('aCalPrev').addEventListener('click', () => {
+    aCalMonth--;
+    if (aCalMonth < 0) { aCalMonth = 11; aCalYear--; }
+    renderAdminCalendar();
+  });
+
+  document.getElementById('aCalNext').addEventListener('click', () => {
+    aCalMonth++;
+    if (aCalMonth > 11) { aCalMonth = 0; aCalYear++; }
+    renderAdminCalendar();
+  });
+
+  function getDefaultSlots(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const day = d.getDay();
+    if (day === 6) return [
+      { time: '06:30 AM', label: 'Saturday Group Ride' },
+      { time: '09:00 AM', label: 'Private Session' },
+    ];
+    if (day === 0) return [];
+    return [
+      { time: '05:00 PM', label: 'After-work Session' },
+      { time: '06:30 PM', label: 'Evening Session' },
+    ];
+  }
+
+  function selectAvailDate(dateStr) {
+    selectedAvailDate = dateStr;
+    renderAdminCalendar();
+
+    const d = new Date(dateStr + 'T00:00:00');
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    document.getElementById('availDateTitle').textContent =
+      `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${dateStr.split('-')[0]}`;
+
+    const avail = getAvailability();
+    const slots = avail[dateStr] !== undefined ? avail[dateStr] : getDefaultSlots(dateStr);
+    const isBlocked = slots === null || (Array.isArray(slots) && slots.length === 0 && avail[dateStr] !== undefined);
+
+    document.getElementById('availEditorArea').style.display = 'block';
+    document.getElementById('availPlaceholder').style.display = 'none';
+    document.getElementById('blockDayCheck').checked = isBlocked;
+
+    renderSlotEditor(isBlocked ? [] : (slots || []));
+  }
+
+  function renderSlotEditor(slots) {
+    const list = document.getElementById('slotEditorList');
+    list.innerHTML = '';
+    (slots || []).forEach((slot, i) => {
+      const row = document.createElement('div');
+      row.className = 'slot-editor-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Time (e.g. 06:30 AM)" value="${slot.time || ''}" class="slot-time-input" data-idx="${i}">
+        <input type="text" placeholder="Label (e.g. Group Ride)" value="${slot.label || ''}" class="slot-label-input" data-idx="${i}">
+        <button class="remove-slot" data-idx="${i}">×</button>
+      `;
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll('.remove-slot').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.slot-editor-row').remove();
+      });
+    });
+  }
+
+  document.getElementById('addSlotBtn').addEventListener('click', () => {
+    const list = document.getElementById('slotEditorList');
+    const row = document.createElement('div');
+    row.className = 'slot-editor-row';
+    row.innerHTML = `
+      <input type="text" placeholder="Time (e.g. 06:30 AM)" class="slot-time-input">
+      <input type="text" placeholder="Label" class="slot-label-input">
+      <button class="remove-slot">×</button>
+    `;
+    row.querySelector('.remove-slot').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+  });
+
+  document.getElementById('blockDayCheck').addEventListener('change', function() {
+    const list = document.getElementById('slotEditorList');
+    list.style.opacity = this.checked ? '0.3' : '1';
+    list.style.pointerEvents = this.checked ? 'none' : '';
+    document.getElementById('addSlotBtn').style.opacity = this.checked ? '0.3' : '1';
+    document.getElementById('addSlotBtn').style.pointerEvents = this.checked ? 'none' : '';
+  });
+
+  document.getElementById('saveAvailBtn').addEventListener('click', () => {
+    if (!selectedAvailDate) return;
+    const avail = getAvailability();
+    const isBlocked = document.getElementById('blockDayCheck').checked;
+
+    if (isBlocked) {
+      avail[selectedAvailDate] = [];
+    } else {
+      const timeInputs = document.querySelectorAll('.slot-time-input');
+      const labelInputs = document.querySelectorAll('.slot-label-input');
+      const slots = [];
+      timeInputs.forEach((ti, i) => {
+        if (ti.value.trim()) {
+          slots.push({ time: ti.value.trim(), label: labelInputs[i]?.value.trim() || '' });
+        }
+      });
+      avail[selectedAvailDate] = slots;
+    }
+
+    saveAvailability(avail);
+    renderAdminCalendar();
+    showToast('✅ Availability saved!');
+  });
+
+  document.getElementById('resetAvailBtn').addEventListener('click', () => {
+    if (!selectedAvailDate) return;
+    const avail = getAvailability();
+    delete avail[selectedAvailDate];
+    saveAvailability(avail);
+    selectAvailDate(selectedAvailDate);
+    renderAdminCalendar();
+    showToast('↩️ Reset to default');
+  });
+
+  // ─── BIKES ─────────────────────────────────────
+  function renderBikesTable() {
+    const tbody = document.getElementById('bikesTableBody');
+    const fleet = getBikeFleet();
+    tbody.innerHTML = fleet.map(b => `
+      <tr>
+        <td>${b.emoji} ${b.name}</td>
+        <td>${b.type}</td>
+        <td>KES ${b.halfDay.toLocaleString()}</td>
+        <td>KES ${b.fullDay.toLocaleString()}</td>
+        <td><span class="status-badge ${b.status === 'available' ? 'confirmed' : 'pending'}">${b.status}</span></td>
+        <td>
+          <button class="action-btn" onclick="toggleBikeStatus(${b.id})">
+            ${b.status === 'available' ? 'Mark Unavailable' : 'Mark Available'}
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.toggleBikeStatus = function(id) {
+    const fleet = getBikeFleet();
+    const idx = fleet.findIndex(b => b.id === id);
+    if (idx === -1) return;
+    fleet[idx].status = fleet[idx].status === 'available' ? 'unavailable' : 'available';
+    saveBikeFleet(fleet);
+    renderBikesTable();
+    showToast('Bike status updated');
+  };
+</script>
+</body>
+</html>

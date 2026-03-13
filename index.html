@@ -679,6 +679,26 @@
 
     try {
       await saveBooking(booking);
+
+      // Notify admin of new booking
+      if (window.EMAILJS_CONFIG) {
+        emailjs.send(
+          window.EMAILJS_CONFIG.serviceId,
+          window.EMAILJS_CONFIG.adminTemplateId,
+          {
+            booking_ref:  booking.ref,
+            rider_name:   booking.name,
+            rider_phone:  booking.phone,
+            rider_email:  booking.email || 'Not provided',
+            booking_date: booking.date,
+            booking_time: booking.time,
+            service:      booking.service,
+            notes:        booking.notes || 'None',
+            admin_email:  window.EMAILJS_CONFIG.adminEmail,
+          }
+        ).catch(e => console.warn('Admin email failed:', e));
+      }
+
       document.getElementById('confirmModal').classList.remove('active');
       document.getElementById('bookingRefDisplay').textContent = `Reference: ${ref}`;
       document.getElementById('successModal').classList.add('active');
@@ -708,5 +728,9 @@
 
 <!-- Load Firebase config BEFORE module script needs it -->
 <script src="firebase-config.js"></script>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailjs-config.js"></script>
 </body>
 </html>

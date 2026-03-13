@@ -307,6 +307,11 @@
 
 <!-- Firebase SDK + App Logic -->
 <script src="firebase-config.js"></script>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailjs-config.js"></script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
@@ -471,6 +476,49 @@
     try {
       if (fbOnline) {
         await updateDoc(doc(db, 'bookings', id), { status, updatedAt: serverTimestamp() });
+
+        // Send rider confirmation email + WhatsApp to admin when confirmed
+        if (status === 'confirmed') {
+          const b = allBookings.find(x => (x.id || x.ref) === id);
+
+          // 1. Email the rider (if they provided an email)
+          if (b && b.email && window.EMAILJS_CONFIG) {
+            emailjs.send(
+              window.EMAILJS_CONFIG.serviceId,
+              window.EMAILJS_CONFIG.riderTemplateId,
+              {
+                rider_name:   b.name,
+                rider_email:  b.email,
+                booking_ref:  b.ref,
+                booking_date: b.date,
+                booking_time: b.time,
+                service:      b.service,
+                notes:        b.notes || 'None',
+                admin_phone:  '+254 737 672 504',
+                admin_email:  window.EMAILJS_CONFIG.adminEmail,
+              }
+            ).catch(e => console.warn('Rider email failed:', e));
+          }
+
+          // 2. Open WhatsApp with pre-filled confirmation message for admin to send
+          if (b) {
+            const msg = encodeURIComponent(
+              `✅ *PedalPulse Booking CONFIRMED*\n` +
+              `─────────────────\n` +
+              `*Ref:* ${b.ref}\n` +
+              `*Rider:* ${b.name}\n` +
+              `*Phone:* ${b.phone}\n` +
+              `*Date:* ${b.date} @ ${b.time}\n` +
+              `*Service:* ${b.service}\n` +
+              `─────────────────\n` +
+              `Confirmation email sent to rider. Ride on! 🚴`
+            );
+            // Small delay so the toast shows first, then open WhatsApp
+            setTimeout(() => {
+              window.open(`https://wa.me/254737672504?text=${msg}`, '_blank');
+            }, 800);
+          }
+        }
       } else {
         const bookings = JSON.parse(localStorage.getItem('pp_bookings') || '[]');
         const idx = bookings.findIndex(b => b.ref === id);

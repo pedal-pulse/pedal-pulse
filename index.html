@@ -23,1068 +23,211 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 16px; overflow-x: hidden; }
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE OVERLAY ─── */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.5;
+    pointer-events: none; z-index: 9999; opacity: 0.5;
   }
 
-  /* ─── NAV ─── */
+  /* NAV */
   nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 1.2rem 3rem;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(16px);
+    background: rgba(10,10,10,0.85); backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
   }
-
-  .nav-logo {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 1.6rem;
-    color: var(--lime);
-    letter-spacing: 1px;
-    text-decoration: none;
-  }
-
+  .nav-logo { font-family: 'Black Ops One', sans-serif; font-size: 1.6rem; color: var(--lime); letter-spacing: 1px; text-decoration: none; }
   .nav-logo span { color: var(--orange); }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-  }
-
-  nav ul a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-
+  nav ul { list-style: none; display: flex; gap: 2.5rem; align-items: center; }
+  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.2s; }
   nav ul a:hover { color: var(--lime); }
+  .nav-cta { background: var(--lime); color: var(--black) !important; padding: 0.55rem 1.4rem; border-radius: 4px; font-weight: 700 !important; transition: transform 0.15s, box-shadow 0.15s !important; }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,245,58,0.35) !important; }
 
-  .nav-cta {
-    background: var(--lime);
-    color: var(--black) !important;
-    padding: 0.55rem 1.4rem;
-    border-radius: 4px;
-    font-weight: 700 !important;
-    transition: transform 0.15s, box-shadow 0.15s !important;
-  }
-
-  .nav-cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(200,245,58,0.35) !important;
-    color: var(--black) !important;
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 8rem 3rem 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -200px; right: -200px;
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(200,245,58,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -100px; left: 20%;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 8rem 3rem 4rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(200,245,58,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero::after { content: ''; position: absolute; bottom: -100px; left: 20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%); pointer-events: none; }
   .hero-text { position: relative; z-index: 2; }
+  .hero-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; color: var(--lime); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.8rem; }
+  .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 2px; background: var(--lime); }
+  .hero h1 { font-family: 'Black Ops One', sans-serif; font-size: clamp(3.5rem, 7vw, 6.5rem); line-height: 0.95; letter-spacing: -1px; margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 2px var(--lime); }
+  .hero-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.7; max-width: 440px; margin-bottom: 2.5rem; font-weight: 300; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary { background: var(--lime); color: var(--black); padding: 0.9rem 2rem; border: none; border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; display: inline-block; }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(200,245,58,0.4); }
+  .btn-outline { background: transparent; color: var(--white); padding: 0.9rem 2rem; border: 1.5px solid var(--border); border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
+  .btn-outline:hover { border-color: var(--lime); color: var(--lime); }
+  .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; height: 500px; }
+  .bike-graphic { width: 100%; max-width: 520px; animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
+  .hero-stats { position: absolute; bottom: -20px; left: 3rem; display: flex; gap: 2rem; }
+  .stat-pill { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; text-align: center; animation: slideUp 0.6s ease forwards; opacity: 0; }
+  .stat-pill:nth-child(2) { animation-delay: 0.1s; } .stat-pill:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .stat-num { font-family: 'Black Ops One', sans-serif; font-size: 2rem; color: var(--lime); line-height: 1; }
+  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
 
-  .hero-eyebrow {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--lime);
-    margin-bottom: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
+  /* SECTION HEADER */
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; display: block; }
+  .section-header h2 { font-family: 'Black Ops One', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.05; }
+  .section-header p { color: var(--muted); font-size: 1rem; margin-top: 0.8rem; font-weight: 300; }
 
-  .hero-eyebrow::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 2px;
-    background: var(--lime);
-  }
-
-  .hero h1 {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: clamp(3.5rem, 7vw, 6.5rem);
-    line-height: 0.95;
-    letter-spacing: -1px;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero h1 em {
-    font-style: normal;
-    color: transparent;
-    -webkit-text-stroke: 2px var(--lime);
-  }
-
-  .hero-sub {
-    font-size: 1.1rem;
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 440px;
-    margin-bottom: 2.5rem;
-    font-weight: 300;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    background: var(--lime);
-    color: var(--black);
-    padding: 0.9rem 2rem;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 0.15s, box-shadow 0.2s;
-    display: inline-block;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 32px rgba(200,245,58,0.4);
-  }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--white);
-    padding: 0.9rem 2rem;
-    border: 1.5px solid var(--border);
-    border-radius: 4px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-    display: inline-block;
-  }
-
-  .btn-outline:hover {
-    border-color: var(--lime);
-    color: var(--lime);
-  }
-
-  .hero-visual {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 500px;
-  }
-
-  /* Animated bike SVG */
-  .bike-graphic {
-    width: 100%;
-    max-width: 520px;
-    animation: float 4s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-16px); }
-  }
-
-  .hero-stats {
-    position: absolute;
-    bottom: -20px; left: 3rem;
-    display: flex;
-    gap: 2rem;
-  }
-
-  .stat-pill {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
-    text-align: center;
-    animation: slideUp 0.6s ease forwards;
-    opacity: 0;
-  }
-
-  .stat-pill:nth-child(2) { animation-delay: 0.1s; }
-  .stat-pill:nth-child(3) { animation-delay: 0.2s; }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .stat-num {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 2rem;
-    color: var(--lime);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 0.2rem;
-  }
-
-  /* ─── SECTION HEADER ─── */
-  .section-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-
-  .section-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 0.8rem;
-    display: block;
-  }
-
-  .section-header h2 {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.05;
-    letter-spacing: -0.5px;
-  }
-
-  .section-header p {
-    color: var(--muted);
-    font-size: 1rem;
-    margin-top: 0.8rem;
-    font-weight: 300;
-  }
-
-  /* ─── SERVICES ─── */
-  #services {
-    padding: 6rem 3rem;
-    background: var(--deep);
-    position: relative;
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .service-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-    cursor: pointer;
-  }
-
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--lime);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-
-  .service-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(200,245,58,0.3);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  }
-
+  /* SERVICES */
+  #services { padding: 6rem 3rem; background: var(--deep); }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor: pointer; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+  .service-card:hover { transform: translateY(-6px); border-color: rgba(200,245,58,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
   .service-card:hover::before { transform: scaleX(1); }
+  .service-icon { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
+  .service-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 0.6rem; text-transform: uppercase; }
+  .service-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+  .service-price { margin-top: 1.5rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; color: var(--lime); font-weight: 600; letter-spacing: 1px; }
+  .service-badge { position: absolute; top: 1.2rem; right: 1.2rem; background: var(--orange); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px; }
 
-  .service-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1.2rem;
-    display: block;
-  }
+  /* SATURDAY BANNER */
+  .sat-banner { background: linear-gradient(135deg, var(--lime) 0%, #a8d828 100%); color: var(--black); padding: 3rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+  .sat-banner h3 { font-family: 'Black Ops One', sans-serif; font-size: 2.5rem; line-height: 1; }
+  .sat-banner p { margin-top: 0.5rem; font-size: 1rem; opacity: 0.7; font-weight: 300; }
+  .sat-banner-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.5rem; }
+  .sat-details { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
+  .sat-detail-num { font-family: 'Black Ops One', sans-serif; font-size: 2.2rem; line-height: 1; }
+  .sat-detail-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-top: 0.2rem; }
 
-  .service-card h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.6rem;
-    text-transform: uppercase;
-  }
+  /* BIKES */
+  #bikes { padding: 6rem 3rem; background: var(--black); }
+  .bikes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .bike-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; }
+  .bike-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .bike-img { height: 180px; background: linear-gradient(135deg, #1a2030 0%, #0d1118 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative; overflow: hidden; }
+  .bike-img::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 100%, rgba(200,245,58,0.1) 0%, transparent 60%); }
+  .bike-info { padding: 1.5rem; }
+  .bike-info h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bike-specs { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 1rem; }
+  .spec-tag { font-size: 0.68rem; background: var(--deep); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem 0.5rem; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
+  .bike-price-row { display: flex; align-items: center; justify-content: space-between; }
+  .bike-price { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--lime); }
+  .bike-price span { font-size: 0.75rem; color: var(--muted); font-weight: 400; margin-left: 2px; }
 
-  .service-card p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    font-weight: 300;
-  }
-
-  .service-price {
-    margin-top: 1.5rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.1rem;
-    color: var(--lime);
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-
-  .service-badge {
-    position: absolute;
-    top: 1.2rem; right: 1.2rem;
-    background: var(--orange);
-    color: var(--black);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 0.25rem 0.6rem;
-    border-radius: 3px;
-  }
-
-  /* ─── SATURDAY RIDE BANNER ─── */
-  .sat-banner {
-    background: linear-gradient(135deg, var(--lime) 0%, #a8d828 100%);
-    color: var(--black);
-    padding: 3rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-  }
-
-  .sat-banner-left { flex: 1; }
-
-  .sat-banner-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 0.5rem;
-  }
-
-  .sat-banner h3 {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 2.5rem;
-    line-height: 1;
-  }
-
-  .sat-banner p {
-    margin-top: 0.5rem;
-    font-size: 1rem;
-    opacity: 0.7;
-    font-weight: 300;
-  }
-
-  .sat-details {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .sat-detail {
-    text-align: center;
-  }
-
-  .sat-detail-num {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 2.2rem;
-    line-height: 1;
-  }
-
-  .sat-detail-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.6;
-    margin-top: 0.2rem;
-  }
-
-  /* ─── BOOKING ─── */
-  #booking {
-    padding: 6rem 3rem;
-    background: var(--black);
-  }
-
-  .booking-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .booking-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  /* Calendar */
-  .calendar-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .cal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.2rem;
-  }
-
-  .cal-header h4 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .cal-nav {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 32px; height: 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s, color 0.2s;
-  }
-
+  /* BOOKING */
+  #booking { padding: 6rem 3rem; background: var(--deep); }
+  .booking-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; align-items: start; }
+  .calendar-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+  .cal-header h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .cal-nav { background: none; border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
   .cal-nav:hover { border-color: var(--lime); color: var(--lime); }
-
-  .cal-days-header {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-    margin-bottom: 4px;
-  }
-
-  .cal-day-label {
-    text-align: center;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 0.3rem 0;
-  }
-
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-  }
-
-  .cal-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    border: 1px solid transparent;
-    position: relative;
-  }
-
+  .cal-days-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
+  .cal-day-label { text-align: center; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0.3rem 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; position: relative; }
   .cal-day.other-month { opacity: 0.2; pointer-events: none; }
   .cal-day.today { border-color: var(--lime); color: var(--lime); }
   .cal-day.has-slots { background: rgba(200,245,58,0.08); color: var(--white); }
-  .cal-day.has-slots::after {
-    content: '';
-    position: absolute;
-    bottom: 3px;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--lime);
-  }
-  .cal-day.selected {
-    background: var(--lime) !important;
-    color: var(--black) !important;
-    font-weight: 700;
-  }
+  .cal-day.has-slots::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--lime); }
+  .cal-day.selected { background: var(--lime) !important; color: var(--black) !important; font-weight: 700; }
   .cal-day.saturday { color: var(--orange); }
-  .cal-day.saturday.has-slots { background: rgba(255,107,53,0.12); }
   .cal-day.past { opacity: 0.25; pointer-events: none; }
-
-  .cal-day:not(.other-month):not(.past):hover {
-    background: var(--border);
-  }
-
-  .cal-legend {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-
-  .legend-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-  }
-
-  /* Booking form */
-  .booking-form-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-  }
-
-  .booking-form-wrap h4 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 1.5rem;
-  }
-
-  .slots-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .slot-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
+  .cal-day:not(.other-month):not(.past):hover { background: var(--border); }
+  .cal-legend { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .booking-form-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .booking-form-wrap h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; }
+  .slots-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; max-height: 200px; overflow-y: auto; }
+  .slot-item { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
   .slot-item:hover { border-color: rgba(200,245,58,0.4); }
-
-  .slot-item.selected {
-    border-color: var(--lime);
-    background: rgba(200,245,58,0.06);
-  }
-
-  .slot-item.booked {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  .slot-time {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-
-  .slot-status {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
-  }
-
+  .slot-item.selected { border-color: var(--lime); background: rgba(200,245,58,0.06); }
+  .slot-item.booked { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  .slot-time { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; }
+  .slot-status { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
   .slot-status.available { background: rgba(200,245,58,0.15); color: var(--lime); }
   .slot-status.booked { background: rgba(255,71,87,0.15); color: var(--danger); }
   .slot-status.pending { background: rgba(255,165,2,0.15); color: var(--pending); }
-
-  .form-group {
-    margin-bottom: 1rem;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 0.72rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.4rem;
-    font-weight: 500;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    background: var(--deep);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--white);
-    padding: 0.7rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: var(--lime);
-  }
-
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--deep); border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 0.7rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: border-color 0.2s; outline: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--lime); }
   .form-group select option { background: var(--deep); }
-
   .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .no-slots { text-align: center; color: var(--muted); padding: 2rem; font-size: 0.9rem; }
 
-  .no-slots {
-    text-align: center;
-    color: var(--muted);
-    padding: 2rem;
-    font-size: 0.9rem;
-  }
-
-  /* ─── BIKES ─── */
-  #bikes {
-    padding: 6rem 3rem;
-    background: var(--deep);
-  }
-
-  .bikes-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .bike-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.25s, box-shadow 0.25s;
-  }
-
-  .bike-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-
-  .bike-img {
-    height: 180px;
-    background: linear-gradient(135deg, #1a2030 0%, #0d1118 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 5rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .bike-img::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 100%, rgba(200,245,58,0.1) 0%, transparent 60%);
-  }
-
-  .bike-info {
-    padding: 1.5rem;
-  }
-
-  .bike-info h3 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .bike-specs {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    margin: 0.8rem 0 1rem;
-  }
-
-  .spec-tag {
-    font-size: 0.68rem;
-    background: var(--deep);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.2rem 0.5rem;
-    color: var(--muted);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .bike-price-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .bike-price {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--lime);
-  }
-
-  .bike-price span {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-weight: 400;
-    margin-left: 2px;
-  }
-
-  /* ─── ABOUT ─── */
-  #about {
-    padding: 6rem 3rem;
-    background: var(--black);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .about-text h2 {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: clamp(2rem, 3.5vw, 2.8rem);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-  }
-
-  .about-text h2 em {
-    font-style: normal;
-    color: var(--lime);
-  }
-
-  .about-text p {
-    color: var(--muted);
-    line-height: 1.8;
-    font-weight: 300;
-    margin-bottom: 1rem;
-  }
-
-  .about-bullets {
-    list-style: none;
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .about-bullets li {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-
-  .about-bullets li::before {
-    content: '→';
-    color: var(--lime);
-    font-size: 0.9rem;
-    flex-shrink: 0;
-  }
-
-  .about-visual {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .about-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-  }
-
+  /* ABOUT */
+  #about { padding: 6rem 3rem; background: var(--black); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; max-width: 1100px; margin: 0 auto; }
+  .about-text h2 { font-family: 'Black Ops One', sans-serif; font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.1; margin-bottom: 1.5rem; }
+  .about-text h2 em { font-style: normal; color: var(--lime); }
+  .about-text p { color: var(--muted); line-height: 1.8; font-weight: 300; margin-bottom: 1rem; }
+  .about-bullets { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .about-bullets li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--muted); }
+  .about-bullets li::before { content: '→'; color: var(--lime); font-size: 0.9rem; flex-shrink: 0; }
+  .about-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .about-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; }
   .about-card:first-child { grid-column: 1 / -1; }
+  .about-card .big-num { font-family: 'Black Ops One', sans-serif; font-size: 3rem; color: var(--lime); line-height: 1; }
+  .about-card .label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.4rem; }
 
-  .about-card .big-num {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 3rem;
-    color: var(--lime);
-    line-height: 1;
-  }
-
-  .about-card .label {
-    color: var(--muted);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 0.4rem;
-  }
-
-  /* ─── LOCATIONS ─── */
-  #locations {
-    padding: 6rem 3rem;
-    background: var(--deep);
-  }
-
-  .locations-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .location-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.3rem;
-    transition: border-color 0.2s;
-  }
-
+  /* LOCATIONS */
+  #locations { padding: 6rem 3rem; background: var(--deep); }
+  .locations-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1100px; margin: 0 auto; }
+  .location-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.3rem; transition: border-color 0.2s; }
   .location-card:hover { border-color: rgba(200,245,58,0.3); }
-
   .location-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .location-card h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .location-card p { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
 
-  .location-card h4 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .location-card p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 0.3rem;
-    line-height: 1.5;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--deep);
-    border-top: 1px solid var(--border);
-    padding: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-  }
-
-  .footer-logo {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 1.4rem;
-    color: var(--lime);
-  }
-
+  /* FOOTER */
+  footer { background: var(--deep); border-top: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+  .footer-logo { font-family: 'Black Ops One', sans-serif; font-size: 1.4rem; color: var(--lime); }
   .footer-logo span { color: var(--orange); }
-
-  footer p {
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  .footer-links a {
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
+  footer p { font-size: 0.8rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--lime); }
 
-  /* ─── MODAL ─── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.active {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .modal {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2.5rem;
-    max-width: 480px;
-    width: 90%;
-    transform: translateY(20px);
-    transition: transform 0.25s;
-  }
-
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px); }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; max-width: 480px; width: 90%; transform: translateY(20px); transition: transform 0.25s; }
   .modal-overlay.active .modal { transform: translateY(0); }
-
-  .modal h3 {
-    font-family: 'Black Ops One', sans-serif;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
+  .modal h3 { font-family: 'Black Ops One', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
   .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-
-  .modal-close {
-    float: right;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 1.5rem;
-    cursor: pointer;
-    line-height: 1;
-    margin-top: -0.5rem;
-  }
-
+  .modal-close { float: right; background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; line-height: 1; margin-top: -0.5rem; }
   .modal-close:hover { color: var(--white); }
-
-  .confirm-details {
-    background: var(--deep);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .confirm-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.4rem 0;
-    font-size: 0.85rem;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .confirm-details { background: var(--deep); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+  .confirm-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
   .confirm-row:last-child { border-bottom: none; }
   .confirm-row .key { color: var(--muted); }
   .confirm-row .val { font-weight: 500; }
+  .success-icon { font-size: 3rem; text-align: center; display: block; margin-bottom: 0.5rem; }
 
-  .success-icon {
-    font-size: 3rem;
-    text-align: center;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
+  /* LOADING SPINNER */
+  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--lime); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ─── SCROLL ANIMATIONS ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
+  /* FIREBASE STATUS */
+  .fb-status { font-size: 0.7rem; padding: 0.3rem 0.7rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .fb-status.connected { background: rgba(46,213,115,0.1); color: var(--success); border: 1px solid rgba(46,213,115,0.2); }
+  .fb-status.offline { background: rgba(255,165,2,0.1); color: var(--pending); border: 1px solid rgba(255,165,2,0.2); }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* ─── RESPONSIVE ─── */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
     nav ul { display: none; }
     .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 2rem; }
     .hero-visual { display: none; }
     .hero-stats { position: static; margin-top: 2rem; }
-    .services-grid { grid-template-columns: 1fr; }
-    .bikes-grid { grid-template-columns: 1fr 1fr; }
+    .services-grid, .bikes-grid { grid-template-columns: 1fr; }
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
     .booking-grid { grid-template-columns: 1fr; }
     .locations-grid { grid-template-columns: 1fr 1fr; }
@@ -1095,7 +238,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">Pedal<span>Pulse</span></a>
   <ul>
@@ -1108,7 +250,6 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-text">
     <div class="hero-eyebrow">Nairobi's Premier Cycling Experience</div>
@@ -1119,263 +260,102 @@
       <a href="#services" class="btn-outline">Explore Services</a>
     </div>
   </div>
-
   <div class="hero-visual">
     <svg class="bike-graphic" viewBox="0 0 520 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Road -->
       <ellipse cx="260" cy="340" rx="220" ry="14" fill="rgba(200,245,58,0.06)"/>
-      <!-- Shadow -->
       <ellipse cx="260" cy="338" rx="140" ry="8" fill="rgba(0,0,0,0.4)"/>
-
-      <!-- Rear wheel -->
       <circle cx="148" cy="270" r="82" stroke="#2a3040" stroke-width="10"/>
       <circle cx="148" cy="270" r="82" stroke="#c8f53a" stroke-width="4" stroke-dasharray="20 12" stroke-linecap="round"/>
       <circle cx="148" cy="270" r="8" fill="#c8f53a"/>
-      <!-- Rear spokes -->
       <line x1="148" y1="188" x2="148" y2="352" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="66" y1="270" x2="230" y2="270" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="90" y1="212" x2="206" y2="328" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="206" y1="212" x2="90" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-
-      <!-- Front wheel -->
       <circle cx="372" cy="270" r="82" stroke="#2a3040" stroke-width="10"/>
       <circle cx="372" cy="270" r="82" stroke="#c8f53a" stroke-width="4" stroke-dasharray="20 12" stroke-linecap="round"/>
       <circle cx="372" cy="270" r="8" fill="#c8f53a"/>
-      <!-- Front spokes -->
       <line x1="372" y1="188" x2="372" y2="352" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="290" y1="270" x2="454" y2="270" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="314" y1="212" x2="430" y2="328" stroke="#2a3040" stroke-width="2.5"/>
       <line x1="430" y1="212" x2="314" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-
-      <!-- Chain stays -->
       <line x1="148" y1="270" x2="248" y2="200" stroke="#c8f53a" stroke-width="6" stroke-linecap="round"/>
       <line x1="148" y1="270" x2="232" y2="220" stroke="#8a9ab5" stroke-width="4" stroke-linecap="round"/>
-
-      <!-- Seat stays -->
       <line x1="248" y1="200" x2="200" y2="120" stroke="#c8f53a" stroke-width="6" stroke-linecap="round"/>
       <line x1="232" y1="220" x2="198" y2="118" stroke="#8a9ab5" stroke-width="4" stroke-linecap="round"/>
-
-      <!-- Down tube -->
       <line x1="248" y1="200" x2="310" y2="110" stroke="#c8f53a" stroke-width="8" stroke-linecap="round"/>
-
-      <!-- Top tube -->
       <line x1="200" y1="118" x2="310" y2="110" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-
-      <!-- Fork -->
       <line x1="310" y1="110" x2="372" y2="270" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-
-      <!-- Head tube -->
       <rect x="300" y="104" width="18" height="32" rx="5" fill="#ff6b35"/>
-
-      <!-- Seat tube -->
       <line x1="248" y1="200" x2="240" y2="108" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-
-      <!-- Seat post -->
       <line x1="240" y1="108" x2="238" y2="82" stroke="#8a9ab5" stroke-width="5" stroke-linecap="round"/>
-
-      <!-- Saddle -->
       <ellipse cx="232" cy="80" rx="32" ry="7" fill="#2a3040" stroke="#c8f53a" stroke-width="2"/>
-
-      <!-- Handlebar stem -->
       <line x1="313" y1="110" x2="340" y2="98" stroke="#8a9ab5" stroke-width="5" stroke-linecap="round"/>
-      <!-- Handlebar -->
       <path d="M 326 92 Q 340 82 354 90" stroke="#c8f53a" stroke-width="5" fill="none" stroke-linecap="round"/>
-
-      <!-- Chainring -->
       <circle cx="248" cy="200" r="28" stroke="#ff6b35" stroke-width="5"/>
       <circle cx="248" cy="200" r="10" fill="#ff6b35" opacity="0.6"/>
-
-      <!-- Speed lines -->
       <line x1="30" y1="220" x2="82" y2="220" stroke="#c8f53a" stroke-width="2" opacity="0.4"/>
       <line x1="18" y1="238" x2="56" y2="238" stroke="#c8f53a" stroke-width="2" opacity="0.25"/>
-      <line x1="42" y1="254" x2="72" y2="254" stroke="#c8f53a" stroke-width="2" opacity="0.2"/>
-
-      <!-- Stars/dust -->
-      <circle cx="60" cy="170" r="2" fill="#c8f53a" opacity="0.6"/>
-      <circle cx="90" cy="150" r="1.5" fill="#c8f53a" opacity="0.4"/>
-      <circle cx="40" cy="190" r="1" fill="#ff6b35" opacity="0.5"/>
     </svg>
   </div>
-
   <div class="hero-stats">
-    <div class="stat-pill">
-      <div class="stat-num">50+</div>
-      <div class="stat-label">Happy Riders</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-num">3K+</div>
-      <div class="stat-label">KMs Guided</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-num">5★</div>
-      <div class="stat-label">Rating</div>
-    </div>
+    <div class="stat-pill"><div class="stat-num">50+</div><div class="stat-label">Happy Riders</div></div>
+    <div class="stat-pill"><div class="stat-num">3K+</div><div class="stat-label">KMs Guided</div></div>
+    <div class="stat-pill"><div class="stat-num">5★</div><div class="stat-label">Rating</div></div>
   </div>
 </section>
 
-<!-- SATURDAY BANNER -->
 <div class="sat-banner">
-  <div class="sat-banner-left">
+  <div>
     <div class="sat-banner-tag">🚴 Weekly Group Event</div>
     <h3>SATURDAY MORNING RIDE</h3>
     <p>Every Saturday we roll out together. All levels welcome — beginners to enthusiasts.</p>
   </div>
   <div class="sat-details">
-    <div class="sat-detail">
-      <div class="sat-detail-num">30–50</div>
-      <div class="sat-detail-label">Kilometers</div>
-    </div>
-    <div class="sat-detail">
-      <div class="sat-detail-num">6:30</div>
-      <div class="sat-detail-label">Start Time AM</div>
-    </div>
-    <div class="sat-detail">
-      <div class="sat-detail-num">Sat</div>
-      <div class="sat-detail-label">Every Week</div>
-    </div>
+    <div class="sat-detail"><div class="sat-detail-num">30–50</div><div class="sat-detail-label">Kilometers</div></div>
+    <div class="sat-detail"><div class="sat-detail-num">6:30</div><div class="sat-detail-label">Start Time AM</div></div>
+    <div class="sat-detail"><div class="sat-detail-num">Sat</div><div class="sat-detail-label">Every Week</div></div>
     <a href="#booking" class="btn-primary" style="background:var(--black);color:var(--lime)">Join the Ride →</a>
   </div>
 </div>
 
-<!-- SERVICES -->
 <section id="services">
-  <div class="section-header reveal">
-    <span class="section-tag">What We Offer</span>
-    <h2>SERVICES</h2>
-    <p>Tailored cycling experiences for every level, available after hours.</p>
-  </div>
-
+  <div class="section-header reveal"><span class="section-tag">What We Offer</span><h2>SERVICES</h2><p>Tailored cycling experiences for every level, available after hours.</p></div>
   <div class="services-grid">
-    <div class="service-card reveal">
-      <span class="service-icon">🎯</span>
-      <h3>Learn to Ride</h3>
-      <p>Never ridden a bike before? No problem. Structured beginner sessions that take you from zero to confident cyclist in a safe, encouraging environment.</p>
-      <div class="service-price">From KES 1,500 / session</div>
-    </div>
-
-    <div class="service-card reveal">
-      <span class="service-badge">Popular</span>
-      <span class="service-icon">⚡</span>
-      <h3>Skills Training</h3>
-      <p>Gear shifting, hill climbing, cornering, cadence, braking technique. Build real cycling skills with one-on-one coaching tailored to your progress.</p>
-      <div class="service-price">From KES 2,000 / session</div>
-    </div>
-
-    <div class="service-card reveal">
-      <span class="service-icon">🗺️</span>
-      <h3>Guided Tours</h3>
-      <p>Short scenic rides or medium-distance adventures around Nairobi. I know the best routes — scenic, safe, and spectacular. Customised to your pace.</p>
-      <div class="service-price">From KES 2,500 / tour</div>
-    </div>
-
-    <div class="service-card reveal">
-      <span class="service-badge">Every Sat</span>
-      <span class="service-icon">🌅</span>
-      <h3>Group Rides</h3>
-      <p>Join our Saturday morning group ride. 30–50km depending on weather and group energy. Great for fitness, community, and exploring Nairobi's outskirts.</p>
-      <div class="service-price">KES 500 / person</div>
-    </div>
-
-    <div class="service-card reveal">
-      <span class="service-icon">🏋️</span>
-      <h3>Fitness Cycling</h3>
-      <p>Structured rides designed around your fitness goals. Whether it's weight loss, endurance building, or general wellness — we plan and pace it together.</p>
-      <div class="service-price">From KES 2,000 / session</div>
-    </div>
-
-    <div class="service-card reveal">
-      <span class="service-icon">🚲</span>
-      <h3>Bike Hire</h3>
-      <p>Need a bike for the day? We've got quality road and hybrid bikes available for hire. Helmet and basic gear included. Perfect for visitors or casual riders.</p>
-      <div class="service-price">From KES 800 / half day</div>
-    </div>
+    <div class="service-card reveal"><span class="service-icon">🎯</span><h3>Learn to Ride</h3><p>Never ridden a bike before? No problem. Structured beginner sessions that take you from zero to confident cyclist in a safe, encouraging environment.</p><div class="service-price">From KES 1,500 / session</div></div>
+    <div class="service-card reveal"><span class="service-badge">Popular</span><span class="service-icon">⚡</span><h3>Skills Training</h3><p>Gear shifting, hill climbing, cornering, cadence, braking technique. Build real cycling skills with one-on-one coaching tailored to your progress.</p><div class="service-price">From KES 2,000 / session</div></div>
+    <div class="service-card reveal"><span class="service-icon">🗺️</span><h3>Guided Tours</h3><p>Short scenic rides or medium-distance adventures around Nairobi. Customised to your pace and experience level.</p><div class="service-price">From KES 2,500 / tour</div></div>
+    <div class="service-card reveal"><span class="service-badge">Every Sat</span><span class="service-icon">🌅</span><h3>Group Rides</h3><p>Join our Saturday morning group ride. 30–50km depending on weather and group energy. Great for fitness, community, and exploring Nairobi's outskirts.</p><div class="service-price">KES 500 / person</div></div>
+    <div class="service-card reveal"><span class="service-icon">🏋️</span><h3>Fitness Cycling</h3><p>Structured rides designed around your fitness goals. Weight loss, endurance building, or general wellness — we plan and pace it together.</p><div class="service-price">From KES 2,000 / session</div></div>
+    <div class="service-card reveal"><span class="service-icon">🚲</span><h3>Bike Hire</h3><p>Need a bike for the day? Quality road and hybrid bikes available for hire. Helmet and basic gear included.</p><div class="service-price">From KES 800 / half day</div></div>
   </div>
 </section>
 
-<!-- BIKES -->
 <section id="bikes">
-  <div class="section-header reveal">
-    <span class="section-tag">Fleet</span>
-    <h2>HIRE A BIKE</h2>
-    <p>Quality machines maintained to the highest standard. Gear up and go.</p>
-  </div>
-
+  <div class="section-header reveal"><span class="section-tag">Fleet</span><h2>HIRE A BIKE</h2><p>Quality machines maintained to the highest standard. Gear up and go.</p></div>
   <div class="bikes-grid">
-    <div class="bike-card reveal">
-      <div class="bike-img">🚴</div>
-      <div class="bike-info">
-        <h3>Road Racer</h3>
-        <div class="bike-specs">
-          <span class="spec-tag">700c</span>
-          <span class="spec-tag">21-Speed</span>
-          <span class="spec-tag">Lightweight</span>
-        </div>
-        <div class="bike-price-row">
-          <div class="bike-price">KES 1,200 <span>/ half day</span></div>
-          <a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="bike-card reveal">
-      <div class="bike-img">🚵</div>
-      <div class="bike-info">
-        <h3>Hybrid Cruiser</h3>
-        <div class="bike-specs">
-          <span class="spec-tag">Comfort</span>
-          <span class="spec-tag">18-Speed</span>
-          <span class="spec-tag">All-terrain</span>
-        </div>
-        <div class="bike-price-row">
-          <div class="bike-price">KES 800 <span>/ half day</span></div>
-          <a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="bike-card reveal">
-      <div class="bike-img">🏔️</div>
-      <div class="bike-info">
-        <h3>Mountain Bike</h3>
-        <div class="bike-specs">
-          <span class="spec-tag">27.5"</span>
-          <span class="spec-tag">Suspension</span>
-          <span class="spec-tag">Trail-ready</span>
-        </div>
-        <div class="bike-price-row">
-          <div class="bike-price">KES 1,000 <span>/ half day</span></div>
-          <a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a>
-        </div>
-      </div>
-    </div>
+    <div class="bike-card reveal"><div class="bike-img">🚴</div><div class="bike-info"><h3>Road Racer</h3><div class="bike-specs"><span class="spec-tag">700c</span><span class="spec-tag">21-Speed</span><span class="spec-tag">Lightweight</span></div><div class="bike-price-row"><div class="bike-price">KES 1,200 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
+    <div class="bike-card reveal"><div class="bike-img">🚵</div><div class="bike-info"><h3>Hybrid Cruiser</h3><div class="bike-specs"><span class="spec-tag">Comfort</span><span class="spec-tag">18-Speed</span><span class="spec-tag">All-terrain</span></div><div class="bike-price-row"><div class="bike-price">KES 800 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
+    <div class="bike-card reveal"><div class="bike-img">🏔️</div><div class="bike-info"><h3>Mountain Bike</h3><div class="bike-specs"><span class="spec-tag">27.5"</span><span class="spec-tag">Suspension</span><span class="spec-tag">Trail-ready</span></div><div class="bike-price-row"><div class="bike-price">KES 1,000 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
   </div>
 </section>
 
-<!-- BOOKING -->
 <section id="booking">
   <div style="max-width:900px;margin:0 auto;">
     <div class="section-header reveal">
       <span class="section-tag">Reserve Your Slot</span>
       <h2>BOOK A SESSION</h2>
       <p>Pick a date, choose a slot, and fill in your details. I'll confirm within 24 hours.</p>
+      <div id="fbStatusBadge" style="margin-top:0.8rem"></div>
     </div>
-
     <div class="booking-grid reveal">
-      <!-- Calendar -->
       <div class="calendar-wrap">
         <div class="cal-header">
           <button class="cal-nav" id="prevMonth">‹</button>
-          <h4 id="calTitle">March 2026</h4>
+          <h4 id="calTitle"></h4>
           <button class="cal-nav" id="nextMonth">›</button>
         </div>
         <div class="cal-days-header">
-          <div class="cal-day-label">Sun</div>
-          <div class="cal-day-label">Mon</div>
-          <div class="cal-day-label">Tue</div>
-          <div class="cal-day-label">Wed</div>
-          <div class="cal-day-label">Thu</div>
-          <div class="cal-day-label">Fri</div>
-          <div class="cal-day-label" style="color:var(--orange)">Sat</div>
+          <div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label" style="color:var(--orange)">Sat</div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
         <div class="cal-legend">
@@ -1384,54 +364,30 @@
           <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div> Unavailable</div>
         </div>
       </div>
-
-      <!-- Form -->
       <div class="booking-form-wrap">
         <h4 id="selectedDateTitle">Select a Date →</h4>
-
         <div id="slotsSection" style="display:none">
           <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;letter-spacing:0.5px;text-transform:uppercase;">Available Times</p>
           <div class="slots-list" id="slotsList"></div>
         </div>
-
-        <div id="noSlots" class="no-slots" style="display:none">
-          <p>No availability on this date. Try another day!</p>
-        </div>
-
+        <div id="noSlots" class="no-slots" style="display:none"><p>No availability on this date. Try another day!</p></div>
         <div id="bookingFormArea" style="display:none">
           <hr style="border-color:var(--border);margin:1rem 0;">
           <div class="form-grid-2">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="fname" placeholder="Your name">
-            </div>
-            <div class="form-group">
-              <label>Phone</label>
-              <input type="tel" id="fphone" placeholder="+254...">
-            </div>
+            <div class="form-group"><label>Full Name</label><input type="text" id="fname" placeholder="Your name"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="fphone" placeholder="+254..."></div>
           </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="femail" placeholder="you@email.com">
-          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="femail" placeholder="you@email.com"></div>
           <div class="form-group">
             <label>Service</label>
             <select id="fservice">
               <option value="">— Select Service —</option>
-              <option>Learn to Ride</option>
-              <option>Skills Training</option>
-              <option>Guided Tour</option>
-              <option>Group Ride (Saturday)</option>
-              <option>Fitness Cycling</option>
-              <option>Bike Hire — Road Racer</option>
-              <option>Bike Hire — Hybrid Cruiser</option>
-              <option>Bike Hire — Mountain Bike</option>
+              <option>Learn to Ride</option><option>Skills Training</option><option>Guided Tour</option>
+              <option>Group Ride (Saturday)</option><option>Fitness Cycling</option>
+              <option>Bike Hire — Road Racer</option><option>Bike Hire — Hybrid Cruiser</option><option>Bike Hire — Mountain Bike</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Notes (optional)</label>
-            <textarea id="fnotes" rows="2" placeholder="Any special requests or questions..."></textarea>
-          </div>
+          <div class="form-group"><label>Notes (optional)</label><textarea id="fnotes" rows="2" placeholder="Any special requests..."></textarea></div>
           <button class="btn-primary" id="submitBtn" style="width:100%;margin-top:0.5rem">Submit Booking Request</button>
         </div>
       </div>
@@ -1439,7 +395,6 @@
   </div>
 </section>
 
-<!-- ABOUT -->
 <section id="about">
   <div class="about-grid">
     <div class="about-text reveal">
@@ -1455,90 +410,34 @@
       </ul>
     </div>
     <div class="about-visual reveal">
-      <div class="about-card">
-        <div class="big-num">5+</div>
-        <div class="label">Years Riding Nairobi's Roads</div>
-      </div>
-      <div class="about-card">
-        <div class="big-num">30+</div>
-        <div class="label">Routes Mapped</div>
-      </div>
-      <div class="about-card">
-        <div class="big-num">100%</div>
-        <div class="label">After-hours Available</div>
-      </div>
+      <div class="about-card"><div class="big-num">5+</div><div class="label">Years Riding Nairobi's Roads</div></div>
+      <div class="about-card"><div class="big-num">30+</div><div class="label">Routes Mapped</div></div>
+      <div class="about-card"><div class="big-num">100%</div><div class="label">After-hours Available</div></div>
     </div>
   </div>
 </section>
 
-<!-- LOCATIONS -->
 <section id="locations">
-  <div class="section-header reveal">
-    <span class="section-tag">Where We Ride</span>
-    <h2>NAIROBI & BEYOND</h2>
-    <p>Operating across Nairobi and its metropolitan areas.</p>
-  </div>
-
+  <div class="section-header reveal"><span class="section-tag">Where We Ride</span><h2>NAIROBI & BEYOND</h2><p>Operating across Nairobi and its metropolitan areas.</p></div>
   <div class="locations-grid">
-    <div class="location-card reveal">
-      <div class="location-icon">🏙️</div>
-      <h4>Nairobi CBD</h4>
-      <p>Urban rides, city exploration, evening circuits</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">🌿</div>
-      <h4>Karura Forest</h4>
-      <p>Scenic forest trails and nature rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">⛰️</div>
-      <h4>Ngong Hills</h4>
-      <p>Hill climb challenges, weekend adventure rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">🛣️</div>
-      <h4>Thika Road Corridor</h4>
-      <p>Long-distance training routes, endurance rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">🌅</div>
-      <h4>Athi River</h4>
-      <p>Flat terrain, speed training, sunrise rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">🏘️</div>
-      <h4>Karen & Langata</h4>
-      <p>Quiet roads, neighbourhood loops, family rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">🌄</div>
-      <h4>Limuru Hills</h4>
-      <p>Scenic highland routes, cooler elevation rides</p>
-    </div>
-    <div class="location-card reveal">
-      <div class="location-icon">📍</div>
-      <h4>Custom Routes</h4>
-      <p>Tell me your location, we'll figure it out</p>
-    </div>
+    <div class="location-card reveal"><div class="location-icon">🏙️</div><h4>Nairobi CBD</h4><p>Urban rides, city exploration, evening circuits</p></div>
+    <div class="location-card reveal"><div class="location-icon">🌿</div><h4>Karura Forest</h4><p>Scenic forest trails and nature rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">⛰️</div><h4>Ngong Hills</h4><p>Hill climb challenges, weekend adventure rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">🛣️</div><h4>Thika Road Corridor</h4><p>Long-distance training routes, endurance rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">🌅</div><h4>Athi River</h4><p>Flat terrain, speed training, sunrise rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">🏘️</div><h4>Karen & Langata</h4><p>Quiet roads, neighbourhood loops, family rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">🌄</div><h4>Limuru Hills</h4><p>Scenic highland routes, cooler elevation rides</p></div>
+    <div class="location-card reveal"><div class="location-icon">📍</div><h4>Custom Routes</h4><p>Tell me your location, we'll figure it out</p></div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div>
-    <div class="footer-logo">Pedal<span>Pulse</span></div>
-    <p style="margin-top:0.4rem;">Nairobi's Premier Cycling Experience</p>
-  </div>
+  <div><div class="footer-logo">Pedal<span>Pulse</span></div><p style="margin-top:0.4rem;">Nairobi's Premier Cycling Experience</p></div>
   <p>📞 +254 700 000 000 &nbsp;|&nbsp; ✉️ ride@pedalpulse.co.ke</p>
-  <div class="footer-links">
-    <a href="#services">Services</a>
-    <a href="#bikes">Hire a Bike</a>
-    <a href="#booking">Book</a>
-    <a href="admin.html">Admin</a>
-  </div>
+  <div class="footer-links"><a href="#services">Services</a><a href="#bikes">Hire a Bike</a><a href="#booking">Book</a><a href="admin.html">Admin</a></div>
 </footer>
 
-<!-- BOOKING CONFIRM MODAL -->
+<!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal">
     <button class="modal-close" id="closeModal">×</button>
@@ -1546,7 +445,7 @@
     <p>Review your details before submitting.</p>
     <div class="confirm-details" id="confirmDetails"></div>
     <div style="display:flex;gap:1rem">
-      <button class="btn-outline" id="cancelConfirm" style="flex:1">Edit</button>
+      <button style="flex:1;background:transparent;color:var(--white);padding:0.7rem;border:1.5px solid var(--border);border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;" id="cancelConfirm">Edit</button>
       <button class="btn-primary" id="finalConfirm" style="flex:1">Confirm →</button>
     </div>
   </div>
@@ -1557,136 +456,137 @@
   <div class="modal" style="text-align:center">
     <span class="success-icon">✅</span>
     <h3>Request Submitted!</h3>
-    <p>Your booking request has been sent. Eliud will confirm your slot within 24 hours via phone or email. Check your email for a reference number.</p>
-    <button class="btn-primary" id="closeSuccess" style="width:100%;margin-top:1rem">Awesome, Thanks!</button>
+    <p>Your booking request has been sent to Eliud. He'll confirm your slot within 24 hours via phone or email.</p>
+    <p style="margin-top:0.5rem;font-family:'Barlow Condensed',sans-serif;color:var(--lime);font-size:1.1rem;font-weight:700;" id="bookingRefDisplay"></p>
+    <button class="btn-primary" id="closeSuccess" style="width:100%;margin-top:1.5rem">Awesome, Thanks!</button>
   </div>
 </div>
 
-<script>
-  // ─── DATA STORE ───────────────────────────────────
-  // Availability data - stored in localStorage
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ── Load config ──────────────────────────────────────────────
+  const cfg = window.FIREBASE_CONFIG;
+  let db;
+  let fbOnline = false;
+
+  function setFbStatus(online) {
+    fbOnline = online;
+    const badge = document.getElementById('fbStatusBadge');
+    if (badge) {
+      badge.innerHTML = online
+        ? '<span class="fb-status connected">🟢 Live — bookings sync in real time</span>'
+        : '<span class="fb-status offline">⚠️ Firebase not configured — running in offline demo mode</span>';
+    }
+  }
+
+  try {
+    if (!cfg || cfg.apiKey === 'REPLACE_WITH_YOUR_API_KEY') throw new Error('not configured');
+    const app = initializeApp(cfg);
+    db = getFirestore(app);
+    setFbStatus(true);
+  } catch(e) {
+    console.warn('Firebase not configured. Running in localStorage demo mode.', e.message);
+    setFbStatus(false);
+  }
+
+  // ── Data helpers ──────────────────────────────────────────────
   function getAvailability() {
-    const stored = localStorage.getItem('pp_availability');
-    if (stored) return JSON.parse(stored);
-    // Default availability: weekdays 17:00-19:00, Saturdays 06:30 (group ride)
-    return {};
+    return JSON.parse(localStorage.getItem('pp_availability') || '{}');
   }
 
-  function getBookings() {
-    const stored = localStorage.getItem('pp_bookings');
-    return stored ? JSON.parse(stored) : [];
-  }
-
-  function saveBookings(b) {
-    localStorage.setItem('pp_bookings', JSON.stringify(b));
-  }
-
-  // Generate default time slots for a given date
-  function getDefaultSlots(dateStr) {
-    const d = new Date(dateStr + 'T00:00:00');
-    const day = d.getDay(); // 0=Sun, 6=Sat
-
-    const availability = getAvailability();
-    if (availability[dateStr] !== undefined) {
-      return availability[dateStr]; // admin-set availability
+  async function getBookingsForDate(dateStr) {
+    if (fbOnline) {
+      try {
+        const q = query(collection(db, 'bookings'), where('date', '==', dateStr));
+        const snap = await getDocs(q);
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch(e) { console.error(e); }
     }
+    return JSON.parse(localStorage.getItem('pp_bookings') || '[]').filter(b => b.date === dateStr);
+  }
 
-    if (day === 6) { // Saturday
-      return [
-        { time: '06:30 AM', label: 'Saturday Group Ride' },
-        { time: '09:00 AM', label: 'Private Session' },
-      ];
+  async function saveBooking(booking) {
+    if (fbOnline) {
+      const docRef = await addDoc(collection(db, 'bookings'), {
+        ...booking,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      });
+      return docRef.id;
+    } else {
+      const bookings = JSON.parse(localStorage.getItem('pp_bookings') || '[]');
+      bookings.push({ ...booking, status: 'pending', created: new Date().toISOString() });
+      localStorage.setItem('pp_bookings', JSON.stringify(bookings));
+      return booking.ref;
     }
-    if (day === 0) return []; // Sunday closed by default
-    // Weekdays: after work hours
-    return [
-      { time: '05:00 PM', label: 'After-work Session' },
-      { time: '06:30 PM', label: 'Evening Session' },
-    ];
   }
 
-  function isBooked(dateStr, time) {
-    return getBookings().some(b => b.date === dateStr && b.time === time && (b.status === 'confirmed' || b.status === 'pending'));
-  }
-
-  // ─── CALENDAR ─────────────────────────────────────
-  let currentYear = 2026, currentMonth = 2; // 0-indexed, March
+  // ── Calendar ──────────────────────────────────────────────────
+  const today = new Date(); today.setHours(0,0,0,0);
+  let currentYear = today.getFullYear(), currentMonth = today.getMonth();
   let selectedDate = null, selectedSlot = null;
 
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  function getDefaultSlots(dateStr) {
+    const avail = getAvailability();
+    if (avail[dateStr] !== undefined) return avail[dateStr];
+    const day = new Date(dateStr + 'T00:00:00').getDay();
+    if (day === 6) return [{ time: '06:30 AM', label: 'Saturday Group Ride' }, { time: '09:00 AM', label: 'Private Session' }];
+    if (day === 0) return [];
+    return [{ time: '05:00 PM', label: 'After-work Session' }, { time: '06:30 PM', label: 'Evening Session' }];
+  }
 
   function renderCalendar() {
     const grid = document.getElementById('calGrid');
-    const title = document.getElementById('calTitle');
-    const monthNames = ['January','February','March','April','May','June',
-                        'July','August','September','October','November','December'];
-
-    title.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('calTitle').textContent = `${months[currentMonth]} ${currentYear}`;
     grid.innerHTML = '';
 
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
 
-    // Previous month fillers
     for (let i = firstDay - 1; i >= 0; i--) {
       const d = document.createElement('div');
-      d.className = 'cal-day other-month';
-      d.textContent = daysInPrev - i;
-      grid.appendChild(d);
+      d.className = 'cal-day other-month'; d.textContent = daysInPrev - i; grid.appendChild(d);
     }
 
-    // Current month
     for (let day = 1; day <= daysInMonth; day++) {
-      const d = document.createElement('div');
       const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const dateObj = new Date(dateStr + 'T00:00:00');
-      const dayOfWeek = dateObj.getDay();
+      const dObj = new Date(dateStr + 'T00:00:00');
+      const d = document.createElement('div');
+      d.className = 'cal-day'; d.textContent = day;
 
-      d.className = 'cal-day';
-      d.textContent = day;
-
-      if (dateObj < today) { d.classList.add('past'); }
+      if (dObj < today) { d.classList.add('past'); }
       else {
         const slots = getDefaultSlots(dateStr);
         if (slots.length > 0) d.classList.add('has-slots');
-        if (dayOfWeek === 6) d.classList.add('saturday');
+        if (dObj.getDay() === 6) d.classList.add('saturday');
       }
-
-      if (dateObj.toDateString() === today.toDateString()) d.classList.add('today');
+      if (dObj.toDateString() === today.toDateString()) d.classList.add('today');
       if (dateStr === selectedDate) d.classList.add('selected');
-
       d.addEventListener('click', () => selectDate(dateStr));
       grid.appendChild(d);
     }
 
-    // Next month fillers
     const total = firstDay + daysInMonth;
-    const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
-    for (let i = 1; i <= remaining; i++) {
-      const d = document.createElement('div');
-      d.className = 'cal-day other-month';
-      d.textContent = i;
-      grid.appendChild(d);
+    const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let i = 1; i <= rem; i++) {
+      const d = document.createElement('div'); d.className = 'cal-day other-month'; d.textContent = i; grid.appendChild(d);
     }
   }
 
-  function selectDate(dateStr) {
-    selectedDate = dateStr;
-    selectedSlot = null;
+  async function selectDate(dateStr) {
+    selectedDate = dateStr; selectedSlot = null;
     renderCalendar();
-    showSlots(dateStr);
-  }
 
-  function showSlots(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
-    const monthNames = ['January','February','March','April','May','June',
-                        'July','August','September','October','November','December'];
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-    document.getElementById('selectedDateTitle').textContent =
-      `${dayNames[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]}`;
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    document.getElementById('selectedDateTitle').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
 
     const slots = getDefaultSlots(dateStr);
     const slotsList = document.getElementById('slotsList');
@@ -1694,36 +594,30 @@
     const noSlots = document.getElementById('noSlots');
     const formArea = document.getElementById('bookingFormArea');
 
-    slotsList.innerHTML = '';
-    formArea.style.display = 'none';
+    slotsList.innerHTML = ''; formArea.style.display = 'none';
 
-    if (slots.length === 0) {
-      slotsSection.style.display = 'none';
-      noSlots.style.display = 'block';
-      return;
+    if (!slots || slots.length === 0) {
+      slotsSection.style.display = 'none'; noSlots.style.display = 'block'; return;
     }
 
-    slotsSection.style.display = 'block';
-    noSlots.style.display = 'none';
+    slotsSection.style.display = 'block'; noSlots.style.display = 'none';
+
+    // Load bookings for this date
+    const bookedSlots = await getBookingsForDate(dateStr);
 
     slots.forEach(slot => {
-      const booked = isBooked(dateStr, slot.time);
+      const booking = bookedSlots.find(b => b.time === slot.time && (b.status === 'confirmed' || b.status === 'pending'));
+      const isBooked = !!booking;
       const item = document.createElement('div');
-      item.className = 'slot-item' + (booked ? ' booked' : '');
-
-      const allBookings = getBookings();
-      const booking = allBookings.find(b => b.date === dateStr && b.time === slot.time);
-      const statusText = booked ? (booking?.status || 'booked') : 'available';
-
+      item.className = 'slot-item' + (isBooked ? ' booked' : '');
       item.innerHTML = `
         <div>
           <div class="slot-time">${slot.time}</div>
           <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${slot.label}</div>
         </div>
-        <span class="slot-status ${statusText}">${statusText}</span>
+        <span class="slot-status ${isBooked ? (booking.status || 'booked') : 'available'}">${isBooked ? (booking.status || 'booked') : 'available'}</span>
       `;
-
-      if (!booked) {
+      if (!isBooked) {
         item.addEventListener('click', () => {
           document.querySelectorAll('.slot-item').forEach(el => el.classList.remove('selected'));
           item.classList.add('selected');
@@ -1731,35 +625,26 @@
           formArea.style.display = 'block';
         });
       }
-
       slotsList.appendChild(item);
     });
   }
 
   document.getElementById('prevMonth').addEventListener('click', () => {
-    currentMonth--;
-    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-    renderCalendar();
+    currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar();
   });
-
   document.getElementById('nextMonth').addEventListener('click', () => {
-    currentMonth++;
-    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    renderCalendar();
+    currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar();
   });
 
-  // ─── BOOKING SUBMISSION ───────────────────────────
+  // ── Booking submission ─────────────────────────────────────────
   document.getElementById('submitBtn').addEventListener('click', () => {
     const name = document.getElementById('fname').value.trim();
     const phone = document.getElementById('fphone').value.trim();
     const email = document.getElementById('femail').value.trim();
     const service = document.getElementById('fservice').value;
-
     if (!name || !phone || !service || !selectedDate || !selectedSlot) {
-      alert('Please fill in all required fields and select a time slot.');
-      return;
+      alert('Please fill in all required fields and select a time slot.'); return;
     }
-
     const details = document.getElementById('confirmDetails');
     details.innerHTML = `
       <div class="confirm-row"><span class="key">Date</span><span class="val">${selectedDate}</span></div>
@@ -1769,23 +654,19 @@
       <div class="confirm-row"><span class="key">Phone</span><span class="val">${phone}</span></div>
       ${email ? `<div class="confirm-row"><span class="key">Email</span><span class="val">${email}</span></div>` : ''}
     `;
-
     document.getElementById('confirmModal').classList.add('active');
   });
 
-  document.getElementById('closeModal').addEventListener('click', () => {
-    document.getElementById('confirmModal').classList.remove('active');
-  });
+  document.getElementById('closeModal').addEventListener('click', () => document.getElementById('confirmModal').classList.remove('active'));
+  document.getElementById('cancelConfirm').addEventListener('click', () => document.getElementById('confirmModal').classList.remove('active'));
 
-  document.getElementById('cancelConfirm').addEventListener('click', () => {
-    document.getElementById('confirmModal').classList.remove('active');
-  });
+  document.getElementById('finalConfirm').addEventListener('click', async () => {
+    const btn = document.getElementById('finalConfirm');
+    btn.innerHTML = '<span class="spinner"></span> Saving...';
+    btn.disabled = true;
 
-  document.getElementById('finalConfirm').addEventListener('click', () => {
-    const bookings = getBookings();
     const ref = 'PP' + Date.now().toString().slice(-6);
-
-    bookings.push({
+    const booking = {
       ref,
       date: selectedDate,
       time: selectedSlot,
@@ -1794,42 +675,38 @@
       email: document.getElementById('femail').value.trim(),
       service: document.getElementById('fservice').value,
       notes: document.getElementById('fnotes').value.trim(),
-      status: 'pending',
-      created: new Date().toISOString()
-    });
+    };
 
-    saveBookings(bookings);
+    try {
+      await saveBooking(booking);
+      document.getElementById('confirmModal').classList.remove('active');
+      document.getElementById('bookingRefDisplay').textContent = `Reference: ${ref}`;
+      document.getElementById('successModal').classList.add('active');
+      // Reset
+      ['fname','fphone','femail','fnotes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('fservice').value = '';
+      selectedSlot = null;
+      selectDate(selectedDate);
+    } catch(e) {
+      alert('Something went wrong. Please try again.');
+      console.error(e);
+    }
 
-    document.getElementById('confirmModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-
-    // Reset form
-    document.getElementById('fname').value = '';
-    document.getElementById('fphone').value = '';
-    document.getElementById('femail').value = '';
-    document.getElementById('fservice').value = '';
-    document.getElementById('fnotes').value = '';
-    selectedSlot = null;
-    showSlots(selectedDate);
+    btn.innerHTML = 'Confirm →'; btn.disabled = false;
   });
 
-  document.getElementById('closeSuccess').addEventListener('click', () => {
-    document.getElementById('successModal').classList.remove('active');
-  });
+  document.getElementById('closeSuccess').addEventListener('click', () => document.getElementById('successModal').classList.remove('active'));
 
-  // ─── SCROLL REVEAL ────────────────────────────────
+  // ── Scroll reveal ───────────────────────────────────────────────
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 60);
-      }
-    });
+    entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 60); });
   }, { threshold: 0.1 });
-
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // ─── INIT ─────────────────────────────────────────
   renderCalendar();
 </script>
+
+<!-- Load Firebase config BEFORE module script needs it -->
+<script src="firebase-config.js"></script>
 </body>
 </html>

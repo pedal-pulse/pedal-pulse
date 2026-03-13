@@ -1,8 +1,6 @@
-# 🚴 PedalPulse Nairobi
+# 🚴 PedalPulse Nairobi — Firebase Edition
 
-> Nairobi's Premier Cycling Experience — Guided tours, training sessions & bike hire.
-
-Live site: `https://YOUR-USERNAME.github.io/pedalpulse`
+Live bookings, real-time admin dashboard, and secure authentication — powered by Firebase.
 
 ---
 
@@ -10,35 +8,83 @@ Live site: `https://YOUR-USERNAME.github.io/pedalpulse`
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Public-facing website |
-| `admin.html` | Admin dashboard (password protected) |
+| `index.html` | Public website with live booking form |
+| `admin.html` | Admin dashboard (Firebase Auth protected) |
+| `firebase-config.js` | **Your Firebase credentials go here** |
+| `firestore.rules` | Firestore security rules (paste into Firebase console) |
 
-## 🚀 Hosting on GitHub Pages
+---
 
-1. Push this repo to GitHub
-2. Go to **Settings → Pages**
-3. Set source to **Deploy from a branch → main → / (root)**
-4. Your site will be live at `https://YOUR-USERNAME.github.io/pedalpulse`
+## 🔥 Firebase Setup (Step by Step)
 
-## 🔐 Admin Access
+### Step 1 — Create a Firebase Project
+1. Go to [console.firebase.google.com](https://console.firebase.google.com)
+2. Click **Add project** → name it `pedalpulse-nairobi`
+3. Disable Google Analytics (optional) → **Create project**
 
-Visit `/admin.html` on your live site.
+---
 
-Default credentials (change these in `admin.html`):
-- **Username:** `admin`
-- **Password:** `pedalpulse2024`
+### Step 2 — Enable Firestore Database
+1. In the left sidebar click **Build → Firestore Database**
+2. Click **Create database**
+3. Choose **Start in production mode** → select region `europe-west1` (closest to Nairobi) → **Enable**
+4. Go to the **Rules** tab and replace the contents with everything from `firestore.rules`
+5. Click **Publish**
 
-To change password, open `admin.html` and edit lines:
-```js
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'pedalpulse2024';
-```
+---
 
-## 📝 Notes
+### Step 3 — Enable Authentication
+1. In the left sidebar click **Build → Authentication**
+2. Click **Get started**
+3. Click **Email/Password** → toggle **Enable** → **Save**
+4. Go to the **Users** tab → click **Add user**
+5. Enter your email (e.g. `eliud@pedalpulse.co.ke`) and a strong password
+6. Click **Add user** — this is your admin login
 
-- All booking data is stored in the visitor's browser (`localStorage`). For a shared/persistent backend, consider upgrading to a service like Firebase or Supabase.
-- Bookings submitted on the public site appear in the admin panel on the **same browser/device** in the demo setup.
+---
 
-## 📞 Contact
+### Step 4 — Get Your Firebase Config
+1. Click the ⚙️ gear icon → **Project settings**
+2. Scroll down to **Your apps** → click the **</>** (Web) icon
+3. Register the app with name `pedalpulse-web` → click **Register app**
+4. You'll see a config object like this:
+   ```js
+   const firebaseConfig = {
+     apiKey: "AIzaSy...",
+     authDomain: "pedalpulse-nairobi.firebaseapp.com",
+     projectId: "pedalpulse-nairobi",
+     storageBucket: "pedalpulse-nairobi.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123456789:web:abc123"
+   };
+   ```
+5. Open `firebase-config.js` and replace each `REPLACE_WITH_...` value with your actual values
 
+---
+
+### Step 5 — Deploy to GitHub Pages
+1. Push all 4 files to your GitHub repo (same repo as before)
+2. GitHub Pages will serve the updated site automatically
+
+---
+
+## ✅ How It Works After Setup
+
+| Action | What Happens |
+|--------|-------------|
+| Visitor submits booking | Saved to Firestore → appears instantly in admin |
+| Admin logs in | Firebase Auth verifies email + password |
+| Admin confirms booking | Firestore doc updated → slot shows as "booked" on public site in real time |
+| Admin edits availability | Saved to Firestore `availability` collection |
+
+---
+
+## 🔒 Security Notes
+- The `firestore.rules` file ensures only authenticated admins can confirm/reject bookings
+- Anyone can **create** a booking (needed for the public form), but only you can **read or modify** them
+- Never share your Firebase config's `apiKey` publicly in a private/secret context — it's safe to include in frontend code as Firebase restricts access via security rules, not the API key
+
+---
+
+## 📞 Support
 PedalPulse Nairobi — ride@pedalpulse.co.ke

@@ -535,7 +535,12 @@
     if (avail[dateStr] !== undefined) return avail[dateStr];
     const day = new Date(dateStr + 'T00:00:00').getDay();
     if (day === 6) return [{ time: '06:30 AM', label: 'Saturday Group Ride' }, { time: '09:00 AM', label: 'Private Session' }];
-    if (day === 0) return [];
+    if (day === 0) return [
+      { time: '01:00 PM', label: 'Sunday Session' },
+      { time: '02:30 PM', label: 'Sunday Session' },
+      { time: '04:00 PM', label: 'Sunday Session' },
+      { time: '05:30 PM', label: 'Sunday Session' },
+    ];
     return [{ time: '05:00 PM', label: 'After-work Session' }, { time: '06:30 PM', label: 'Evening Session' }];
   }
 
@@ -680,24 +685,23 @@
     try {
       await saveBooking(booking);
 
-      // Notify admin of new booking
-      if (window.EMAILJS_CONFIG) {
-        emailjs.send(
-          window.EMAILJS_CONFIG.serviceId,
-          window.EMAILJS_CONFIG.adminTemplateId,
-          {
-            booking_ref:  booking.ref,
-            rider_name:   booking.name,
-            rider_phone:  booking.phone,
-            rider_email:  booking.email || 'Not provided',
-            booking_date: booking.date,
-            booking_time: booking.time,
-            service:      booking.service,
-            notes:        booking.notes || 'None',
-            admin_email:  window.EMAILJS_CONFIG.adminEmail,
-          }
-        ).catch(e => console.warn('Admin email failed:', e));
-      }
+      // WhatsApp alert to admin on new booking submission
+      const waMsg = encodeURIComponent(
+        `🔔 *New PedalPulse Booking!*\n` +
+        `─────────────────\n` +
+        `*Ref:* ${booking.ref}\n` +
+        `*Rider:* ${booking.name}\n` +
+        `*Phone:* ${booking.phone}\n` +
+        `*Date:* ${booking.date} @ ${booking.time}\n` +
+        `*Service:* ${booking.service}\n` +
+        `*Notes:* ${booking.notes || 'None'}\n` +
+        `─────────────────\n` +
+        `👉 Log in to confirm or reject:\n` +
+        `https://pedal-pulse.github.io/pedal-pulse/admin.html`
+      );
+      setTimeout(() => {
+        window.open(`https://wa.me/254737672504?text=${waMsg}`, '_blank');
+      }, 600);
 
       document.getElementById('confirmModal').classList.remove('active');
       document.getElementById('bookingRefDisplay').textContent = `Reference: ${ref}`;
@@ -728,9 +732,5 @@
 
 <!-- Load Firebase config BEFORE module script needs it -->
 <script src="firebase-config.js"></script>
-
-<!-- EmailJS SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="emailjs-config.js"></script>
 </body>
 </html>

@@ -572,7 +572,12 @@
   function getDefaultSlots(dateStr) {
     const day = new Date(dateStr + 'T00:00:00').getDay();
     if (day === 6) return [{ time: '06:30 AM', label: 'Saturday Group Ride' }, { time: '09:00 AM', label: 'Private Session' }];
-    if (day === 0) return [];
+    if (day === 0) return [
+      { time: '01:00 PM', label: 'Sunday Session' },
+      { time: '02:30 PM', label: 'Sunday Session' },
+      { time: '04:00 PM', label: 'Sunday Session' },
+      { time: '05:30 PM', label: 'Sunday Session' },
+    ];
     return [{ time: '05:00 PM', label: 'After-work Session' }, { time: '06:30 PM', label: 'Evening Session' }];
   }
 

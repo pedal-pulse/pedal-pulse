@@ -326,17 +326,13 @@
     <div class="service-card reveal"><span class="service-icon">🗺️</span><h3>Guided Tours</h3><p>Short scenic rides or medium-distance adventures around Nairobi. Customised to your pace and experience level.</p><div class="service-price">From KES 2,500 / tour</div></div>
     <div class="service-card reveal"><span class="service-badge">Every Sat</span><span class="service-icon">🌅</span><h3>Group Rides</h3><p>Join our Saturday morning group ride. 30–50km depending on weather and group energy. Great for fitness, community, and exploring Nairobi's outskirts.</p><div class="service-price">KES 500 / person</div></div>
     <div class="service-card reveal"><span class="service-icon">🏋️</span><h3>Fitness Cycling</h3><p>Structured rides designed around your fitness goals. Weight loss, endurance building, or general wellness — we plan and pace it together.</p><div class="service-price">From KES 2,000 / session</div></div>
-    <div class="service-card reveal"><span class="service-icon">🚲</span><h3>Bike Hire</h3><p>Need a bike for the day? Quality road and hybrid bikes available for hire. Helmet and basic gear included.</p><div class="service-price">From KES 800 / half day</div></div>
+    <div class="service-card reveal"><span class="service-icon">🚲</span><h3>Bike Hire</h3><p>Need a bike for the day? Quality road and hybrid bikes available for hire. Helmet and basic gear included.</p><div class="service-price" id="hireFromPrice">From KES 800 / half day</div></div>
   </div>
 </section>
 
 <section id="bikes">
   <div class="section-header reveal"><span class="section-tag">Fleet</span><h2>HIRE A BIKE</h2><p>Quality machines maintained to the highest standard. Gear up and go.</p></div>
-  <div class="bikes-grid">
-    <div class="bike-card reveal"><div class="bike-img">🚴</div><div class="bike-info"><h3>Road Racer</h3><div class="bike-specs"><span class="spec-tag">700c</span><span class="spec-tag">21-Speed</span><span class="spec-tag">Lightweight</span></div><div class="bike-price-row"><div class="bike-price">KES 1,200 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
-    <div class="bike-card reveal"><div class="bike-img">🚵</div><div class="bike-info"><h3>Hybrid Cruiser</h3><div class="bike-specs"><span class="spec-tag">Comfort</span><span class="spec-tag">18-Speed</span><span class="spec-tag">All-terrain</span></div><div class="bike-price-row"><div class="bike-price">KES 800 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
-    <div class="bike-card reveal"><div class="bike-img">🏔️</div><div class="bike-info"><h3>Mountain Bike</h3><div class="bike-specs"><span class="spec-tag">27.5"</span><span class="spec-tag">Suspension</span><span class="spec-tag">Trail-ready</span></div><div class="bike-price-row"><div class="bike-price">KES 1,000 <span>/ half day</span></div><a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a></div></div></div>
-  </div>
+  <div class="bikes-grid" id="bikesGrid"></div>
 </section>
 
 <section id="booking">
@@ -727,7 +723,55 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+
+  // ── Bike fleet (prices come from Firestore; defaults used if offline) ──
+  const DEFAULT_BIKES = [
+    {id:'road',   name:'Road Racer',     halfDay:1200, fullDay:2000, status:'available', emoji:'🚴', specs:['700c','21-Speed','Lightweight']},
+    {id:'hybrid', name:'Hybrid Cruiser', halfDay:800,  fullDay:1400, status:'available', emoji:'🚵', specs:['Comfort','18-Speed','All-terrain']},
+    {id:'mtb',    name:'Mountain Bike',  halfDay:1000, fullDay:1700, status:'available', emoji:'🏔️', specs:['27.5"','Suspension','Trail-ready']},
+  ];
+
+  function renderBikes(fleet) {
+    const grid = document.getElementById('bikesGrid');
+    grid.innerHTML = fleet.map(b => {
+      const ok = b.status === 'available';
+      return `<div class="bike-card visible" style="${ok ? '' : 'opacity:0.55'}">
+        <div class="bike-img">${b.emoji}</div>
+        <div class="bike-info">
+          <h3>${b.name}</h3>
+          <div class="bike-specs">${(b.specs||[]).map(s => `<span class="spec-tag">${s}</span>`).join('')}</div>
+          <div class="bike-price-row">
+            <div>
+              <div class="bike-price">KES ${Number(b.halfDay).toLocaleString()} <span>/ half day</span></div>
+              <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">KES ${Number(b.fullDay).toLocaleString()} / full day</div>
+            </div>
+            ${ok ? '<a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a>'
+                 : '<span class="spec-tag" style="color:var(--danger)">Unavailable</span>'}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    const prices = fleet.map(b => Number(b.halfDay)).filter(n => !isNaN(n));
+    if (prices.length) document.getElementById('hireFromPrice').textContent = `From KES ${Math.min(...prices).toLocaleString()} / half day`;
+  }
+
+  async function loadBikes() {
+    let fleet = DEFAULT_BIKES;
+    if (fbOnline) {
+      try {
+        const snap = await getDocs(collection(db, 'bikes'));
+        if (!snap.empty) {
+          const saved = {};
+          snap.docs.forEach(d => saved[d.id] = d.data());
+          fleet = DEFAULT_BIKES.map(b => ({...b, ...(saved[b.id] || {})}));
+        }
+      } catch(e) { console.warn('Using default bike prices:', e.message); }
+    }
+    renderBikes(fleet);
+  }
+
   renderCalendar();
+  loadBikes();
 </script>
 
 <!-- Load Firebase config BEFORE module script needs it -->

@@ -3,532 +3,573 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PedalPulse Nairobi — Ride With Us</title>
+<title>PedalPulse — Admin Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a;
-    --deep: #111418;
-    --card: #161b22;
-    --border: #2a3040;
-    --lime: #c8f53a;
-    --lime-dim: #9dbf25;
-    --orange: #ff6b35;
-    --white: #f0ede6;
-    --muted: #8a9ab5;
-    --danger: #ff4757;
-    --success: #2ed573;
-    --pending: #ffa502;
+    --black: #0a0a0a; --deep: #111418; --card: #161b22; --border: #2a3040;
+    --lime: #c8f53a; --orange: #ff6b35; --white: #f0ede6; --muted: #8a9ab5;
+    --danger: #ff4757; --success: #2ed573; --pending: #ffa502;
+    --sidebar-w: 240px;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 16px; overflow-x: hidden; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999; opacity: 0.5;
-  }
+  /* LOGIN */
+  #loginScreen { position: fixed; inset: 0; background: var(--black); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; width: 380px; text-align: center; }
+  .login-logo { font-family: 'Black Ops One', sans-serif; font-size: 2rem; color: var(--lime); margin-bottom: 0.2rem; }
+  .login-logo span { color: var(--orange); }
+  .login-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 2rem; }
+  .login-box input { width: 100%; background: var(--deep); border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 0.8rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; margin-bottom: 0.8rem; outline: none; transition: border-color 0.2s; }
+  .login-box input:focus { border-color: var(--lime); }
+  .login-btn { width: 100%; background: var(--lime); color: var(--black); border: none; border-radius: 6px; padding: 0.85rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; margin-top: 0.4rem; transition: opacity 0.2s; }
+  .login-btn:hover { opacity: 0.85; }
+  .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; }
+  .login-spinner { display: none; }
+  .login-spinner.show { display: inline-block; }
+  .spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: var(--black); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.2rem 3rem;
-    background: rgba(10,10,10,0.85); backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo { font-family: 'Black Ops One', sans-serif; font-size: 1.6rem; color: var(--lime); letter-spacing: 1px; text-decoration: none; }
-  .nav-logo span { color: var(--orange); }
-  nav ul { list-style: none; display: flex; gap: 2.5rem; align-items: center; }
-  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.2s; }
-  nav ul a:hover { color: var(--lime); }
-  .nav-cta { background: var(--lime); color: var(--black) !important; padding: 0.55rem 1.4rem; border-radius: 4px; font-weight: 700 !important; transition: transform 0.15s, box-shadow 0.15s !important; }
-  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,245,58,0.35) !important; }
+  /* SIDEBAR */
+  .sidebar { width: var(--sidebar-w); background: var(--deep); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto; }
+  .sidebar-logo { padding: 1.5rem; border-bottom: 1px solid var(--border); }
+  .sidebar-logo .logo { font-family: 'Black Ops One', sans-serif; font-size: 1.3rem; color: var(--lime); }
+  .sidebar-logo .logo span { color: var(--orange); }
+  .sidebar-logo p { font-size: 0.7rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+  nav.side-nav { padding: 1rem 0; flex: 1; }
+  .nav-section { padding: 0.5rem 1rem; font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 0.5rem; }
+  .side-link { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1.5rem; color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+  .side-link:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+  .side-link.active { color: var(--lime); background: rgba(200,245,58,0.08); border-right: 2px solid var(--lime); }
+  .side-link .icon { font-size: 1rem; width: 20px; text-align: center; }
+  .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+  .badge-count { margin-left: auto; background: var(--orange); color: var(--black); font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 10px; }
 
-  /* HERO */
-  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 8rem 3rem 4rem; position: relative; overflow: hidden; }
-  .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(200,245,58,0.12) 0%, transparent 70%); pointer-events: none; }
-  .hero::after { content: ''; position: absolute; bottom: -100px; left: 20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%); pointer-events: none; }
-  .hero-text { position: relative; z-index: 2; }
-  .hero-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; color: var(--lime); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.8rem; }
-  .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 2px; background: var(--lime); }
-  .hero h1 { font-family: 'Black Ops One', sans-serif; font-size: clamp(3.5rem, 7vw, 6.5rem); line-height: 0.95; letter-spacing: -1px; margin-bottom: 1.5rem; }
-  .hero h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 2px var(--lime); }
-  .hero-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.7; max-width: 440px; margin-bottom: 2.5rem; font-weight: 300; }
-  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .btn-primary { background: var(--lime); color: var(--black); padding: 0.9rem 2rem; border: none; border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; display: inline-block; }
-  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(200,245,58,0.4); }
-  .btn-outline { background: transparent; color: var(--white); padding: 0.9rem 2rem; border: 1.5px solid var(--border); border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
-  .btn-outline:hover { border-color: var(--lime); color: var(--lime); }
-  .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; height: 500px; }
-  .bike-graphic { width: 100%; max-width: 520px; animation: float 4s ease-in-out infinite; }
-  @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
-  .hero-stats { position: absolute; bottom: -20px; left: 3rem; display: flex; gap: 2rem; }
-  .stat-pill { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; text-align: center; animation: slideUp 0.6s ease forwards; opacity: 0; }
-  .stat-pill:nth-child(2) { animation-delay: 0.1s; } .stat-pill:nth-child(3) { animation-delay: 0.2s; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .stat-num { font-family: 'Black Ops One', sans-serif; font-size: 2rem; color: var(--lime); line-height: 1; }
-  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
+  /* MAIN */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--deep); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+  .topbar h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .admin-pill { background: rgba(200,245,58,0.1); border: 1px solid rgba(200,245,58,0.3); color: var(--lime); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px; }
+  .fb-pill { background: rgba(46,213,115,0.1); border: 1px solid rgba(46,213,115,0.2); color: var(--success); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+  .fb-pill.offline { background: rgba(255,165,2,0.1); border-color: rgba(255,165,2,0.2); color: var(--pending); }
+  .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.15s; }
+  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+  .content { padding: 2rem; flex: 1; }
 
-  /* SECTION HEADER */
-  .section-header { text-align: center; margin-bottom: 4rem; }
-  .section-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; display: block; }
-  .section-header h2 { font-family: 'Black Ops One', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.05; }
-  .section-header p { color: var(--muted); font-size: 1rem; margin-top: 0.8rem; font-weight: 300; }
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
 
-  /* SERVICES */
-  #services { padding: 6rem 3rem; background: var(--deep); }
-  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
-  .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor: pointer; }
-  .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
-  .service-card:hover { transform: translateY(-6px); border-color: rgba(200,245,58,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  .service-card:hover::before { transform: scaleX(1); }
-  .service-icon { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
-  .service-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 0.6rem; text-transform: uppercase; }
-  .service-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
-  .service-price { margin-top: 1.5rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; color: var(--lime); font-weight: 600; letter-spacing: 1px; }
-  .service-badge { position: absolute; top: 1.2rem; right: 1.2rem; background: var(--orange); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px; }
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.3rem 1.5rem; }
+  .stat-card .label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-card .num { font-family: 'Black Ops One', sans-serif; font-size: 2.2rem; color: var(--white); margin-top: 0.3rem; line-height: 1; }
+  .stat-card .sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+  .stat-card.highlight .num { color: var(--lime); }
+  .stat-card.warn .num { color: var(--pending); }
 
-  /* SATURDAY BANNER */
-  .sat-banner { background: linear-gradient(135deg, var(--lime) 0%, #a8d828 100%); color: var(--black); padding: 3rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
-  .sat-banner h3 { font-family: 'Black Ops One', sans-serif; font-size: 2.5rem; line-height: 1; }
-  .sat-banner p { margin-top: 0.5rem; font-size: 1rem; opacity: 0.7; font-weight: 300; }
-  .sat-banner-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.5rem; }
-  .sat-details { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
-  .sat-detail-num { font-family: 'Black Ops One', sans-serif; font-size: 2.2rem; line-height: 1; }
-  .sat-detail-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-top: 0.2rem; }
+  /* TABLES */
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+  .table-header h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .filter-row select, .filter-row input { background: var(--deep); border: 1px solid var(--border); color: var(--white); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-family: 'DM Sans', sans-serif; outline: none; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 0.7rem 1.2rem; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; background: var(--deep); font-weight: 600; }
+  td { padding: 0.8rem 1.2rem; font-size: 0.85rem; border-top: 1px solid var(--border); vertical-align: middle; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .status-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 4px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-badge.pending { background: rgba(255,165,2,0.15); color: var(--pending); }
+  .status-badge.confirmed { background: rgba(46,213,115,0.15); color: var(--success); }
+  .status-badge.rejected { background: rgba(255,71,87,0.15); color: var(--danger); }
+  .status-badge.cancelled { background: rgba(138,154,181,0.15); color: var(--muted); }
+  .action-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 5px; font-size: 0.72rem; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; margin-right: 0.3rem; }
+  .action-btn.confirm { border-color: rgba(200,245,58,0.4); color: var(--lime); }
+  .action-btn.confirm:hover { background: rgba(200,245,58,0.1); }
+  .action-btn.reject { border-color: rgba(255,71,87,0.4); color: var(--danger); }
+  .action-btn.reject:hover { background: rgba(255,71,87,0.1); }
+  .ref-code { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; color: var(--lime); font-weight: 600; }
 
-  /* BIKES */
-  #bikes { padding: 6rem 3rem; background: var(--black); }
-  .bikes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
-  .bike-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; }
-  .bike-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-  .bike-img { height: 180px; background: linear-gradient(135deg, #1a2030 0%, #0d1118 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative; overflow: hidden; }
-  .bike-img::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 100%, rgba(200,245,58,0.1) 0%, transparent 60%); }
-  .bike-info { padding: 1.5rem; }
-  .bike-info h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  .bike-specs { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.8rem 0 1rem; }
-  .spec-tag { font-size: 0.68rem; background: var(--deep); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem 0.5rem; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
-  .bike-price-row { display: flex; align-items: center; justify-content: space-between; }
-  .bike-price { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--lime); }
-  .bike-price span { font-size: 0.75rem; color: var(--muted); font-weight: 400; margin-left: 2px; }
+  /* AVAILABILITY */
+  .avail-container { display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
+  .avail-cal-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .avail-edit { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .avail-edit h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.2rem; }
+  .a-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .a-cal-header h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .a-cal-nav { background: none; border: 1px solid var(--border); color: var(--muted); width: 28px; height: 28px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; }
+  .a-cal-nav:hover { border-color: var(--lime); color: var(--lime); }
+  .a-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .a-cal-day-label { text-align: center; font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0.2rem 0; }
+  .a-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; position: relative; }
+  .a-cal-day.other-month { opacity: 0.2; pointer-events: none; }
+  .a-cal-day.today { border-color: var(--lime); }
+  .a-cal-day.has-custom { background: rgba(200,245,58,0.1); }
+  .a-cal-day.blocked { background: rgba(255,71,87,0.08); color: var(--danger); }
+  .a-cal-day.has-bookings::after { content: ''; position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: var(--orange); }
+  .a-cal-day.selected { background: var(--lime) !important; color: var(--black) !important; font-weight: 700; }
+  .a-cal-day:not(.other-month):hover { background: var(--border); }
+  .slot-editor { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
+  .slot-editor-row { display: flex; gap: 0.5rem; align-items: center; }
+  .slot-editor-row input { background: var(--deep); border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 0.5rem 0.8rem; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; outline: none; flex: 1; }
+  .slot-editor-row input:focus { border-color: var(--lime); }
+  .remove-slot { background: none; border: 1px solid var(--border); color: var(--danger); width: 28px; height: 28px; border-radius: 5px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .remove-slot:hover { background: rgba(255,71,87,0.1); }
+  .add-slot-btn { background: none; border: 1px dashed var(--border); color: var(--muted); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .add-slot-btn:hover { border-color: var(--lime); color: var(--lime); }
+  .block-day-check { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--muted); cursor: pointer; }
+  .block-day-check input { width: auto; accent-color: var(--danger); }
 
-  /* BOOKING */
-  #booking { padding: 6rem 3rem; background: var(--deep); }
-  .booking-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; align-items: start; }
-  .calendar-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
-  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
-  .cal-header h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-  .cal-nav { background: none; border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
-  .cal-nav:hover { border-color: var(--lime); color: var(--lime); }
-  .cal-days-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
-  .cal-day-label { text-align: center; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0.3rem 0; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; position: relative; }
-  .cal-day.other-month { opacity: 0.2; pointer-events: none; }
-  .cal-day.today { border-color: var(--lime); color: var(--lime); }
-  .cal-day.has-slots { background: rgba(200,245,58,0.08); color: var(--white); }
-  .cal-day.has-slots::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--lime); }
-  .cal-day.selected { background: var(--lime) !important; color: var(--black) !important; font-weight: 700; }
-  .cal-day.saturday { color: var(--orange); }
-  .cal-day.past { opacity: 0.25; pointer-events: none; }
-  .cal-day:not(.other-month):not(.past):hover { background: var(--border); }
-  .cal-legend { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: var(--muted); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .booking-form-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
-  .booking-form-wrap h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; }
-  .slots-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; max-height: 200px; overflow-y: auto; }
-  .slot-item { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
-  .slot-item:hover { border-color: rgba(200,245,58,0.4); }
-  .slot-item.selected { border-color: var(--lime); background: rgba(200,245,58,0.06); }
-  .slot-item.booked { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-  .slot-time { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; }
-  .slot-status { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-  .slot-status.available { background: rgba(200,245,58,0.15); color: var(--lime); }
-  .slot-status.booked { background: rgba(255,71,87,0.15); color: var(--danger); }
-  .slot-status.pending { background: rgba(255,165,2,0.15); color: var(--pending); }
-  .form-group { margin-bottom: 1rem; }
-  .form-group label { display: block; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; font-weight: 500; }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--deep); border: 1px solid var(--border); border-radius: 6px; color: var(--white); padding: 0.7rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: border-color 0.2s; outline: none; }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--lime); }
-  .form-group select option { background: var(--deep); }
-  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-  .no-slots { text-align: center; color: var(--muted); padding: 2rem; font-size: 0.9rem; }
+  /* NOTICE */
+  .notice { padding: 0.8rem 1rem; border-radius: 8px; font-size: 0.82rem; margin-bottom: 1rem; }
+  .notice.info { background: rgba(200,245,58,0.07); border: 1px solid rgba(200,245,58,0.2); color: var(--lime); }
+  .notice.warn { background: rgba(255,165,2,0.07); border: 1px solid rgba(255,165,2,0.2); color: var(--pending); }
 
-  /* ABOUT */
-  #about { padding: 6rem 3rem; background: var(--black); }
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; max-width: 1100px; margin: 0 auto; }
-  .about-text h2 { font-family: 'Black Ops One', sans-serif; font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.1; margin-bottom: 1.5rem; }
-  .about-text h2 em { font-style: normal; color: var(--lime); }
-  .about-text p { color: var(--muted); line-height: 1.8; font-weight: 300; margin-bottom: 1rem; }
-  .about-bullets { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
-  .about-bullets li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--muted); }
-  .about-bullets li::before { content: '→'; color: var(--lime); font-size: 0.9rem; flex-shrink: 0; }
-  .about-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .about-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; }
-  .about-card:first-child { grid-column: 1 / -1; }
-  .about-card .big-num { font-family: 'Black Ops One', sans-serif; font-size: 3rem; color: var(--lime); line-height: 1; }
-  .about-card .label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.4rem; }
-
-  /* LOCATIONS */
-  #locations { padding: 6rem 3rem; background: var(--deep); }
-  .locations-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1100px; margin: 0 auto; }
-  .location-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.3rem; transition: border-color 0.2s; }
-  .location-card:hover { border-color: rgba(200,245,58,0.3); }
-  .location-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-  .location-card h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  .location-card p { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
-
-  /* FOOTER */
-  footer { background: var(--deep); border-top: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
-  .footer-logo { font-family: 'Black Ops One', sans-serif; font-size: 1.4rem; color: var(--lime); }
-  .footer-logo span { color: var(--orange); }
-  footer p { font-size: 0.8rem; color: var(--muted); }
-  .footer-links { display: flex; gap: 1.5rem; }
-  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--lime); }
+  /* BUTTONS */
+  .btn-lime { background: var(--lime); color: var(--black); border: none; padding: 0.7rem 1.2rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; }
+  .btn-lime:hover { opacity: 0.85; }
+  .btn-neutral { background: var(--deep); color: var(--muted); border: 1px solid var(--border); padding: 0.7rem 1rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+  .btn-neutral:hover { color: var(--white); }
+  .btn-success { background: var(--success); color: var(--black); border: none; padding: 0.7rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; flex: 1; }
+  .btn-danger-btn { background: var(--danger); color: var(--white); border: none; padding: 0.7rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; flex: 1; }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px); }
   .modal-overlay.active { opacity: 1; pointer-events: all; }
-  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; max-width: 480px; width: 90%; transform: translateY(20px); transition: transform 0.25s; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; max-width: 480px; width: 90%; transform: translateY(20px); transition: transform 0.25s; }
   .modal-overlay.active .modal { transform: translateY(0); }
-  .modal h3 { font-family: 'Black Ops One', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
-  .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-  .modal-close { float: right; background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; line-height: 1; margin-top: -0.5rem; }
-  .modal-close:hover { color: var(--white); }
-  .confirm-details { background: var(--deep); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
-  .confirm-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
-  .confirm-row:last-child { border-bottom: none; }
-  .confirm-row .key { color: var(--muted); }
-  .confirm-row .val { font-weight: 500; }
-  .success-icon { font-size: 3rem; text-align: center; display: block; margin-bottom: 0.5rem; }
+  .modal h3 { font-family: 'Black Ops One', sans-serif; font-size: 1.3rem; margin-bottom: 1rem; }
+  .detail-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .k { color: var(--muted); }
+  .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
 
-  /* LOADING SPINNER */
-  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--lime); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  /* TOAST */
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--success); color: var(--black); padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 700; font-size: 0.88rem; z-index: 500; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: var(--danger); color: var(--white); }
 
-  /* FIREBASE STATUS */
-  .fb-status { font-size: 0.7rem; padding: 0.3rem 0.7rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 0.4rem; }
-  .fb-status.connected { background: rgba(46,213,115,0.1); color: var(--success); border: 1px solid rgba(46,213,115,0.2); }
-  .fb-status.offline { background: rgba(255,165,2,0.1); color: var(--pending); border: 1px solid rgba(255,165,2,0.2); }
-
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    nav ul { display: none; }
-    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 2rem; }
-    .hero-visual { display: none; }
-    .hero-stats { position: static; margin-top: 2rem; }
-    .services-grid, .bikes-grid { grid-template-columns: 1fr; }
-    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .booking-grid { grid-template-columns: 1fr; }
-    .locations-grid { grid-template-columns: 1fr 1fr; }
-    #services, #bikes, #about, #booking, #locations { padding: 4rem 1.5rem; }
-    .sat-banner { padding: 2rem 1.5rem; }
-  }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="#" class="nav-logo">Pedal<span>Pulse</span></a>
-  <ul>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#bikes">Hire a Bike</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#locations">Areas</a></li>
-    <li><a href="#booking" class="nav-cta">Book Now</a></li>
-    <li><a href="admin.html" style="color:var(--orange)">Admin</a></li>
-  </ul>
-</nav>
-
-<section class="hero">
-  <div class="hero-text">
-    <div class="hero-eyebrow">Nairobi's Premier Cycling Experience</div>
-    <h1>RIDE<br><em>NAIROBI.</em><br>FEEL ALIVE.</h1>
-    <p class="hero-sub">Professional cycling training, guided tours, and bike hire across Nairobi and its metropolitan areas. Every revolution counts.</p>
-    <div class="hero-actions">
-      <a href="#booking" class="btn-primary">Book a Session</a>
-      <a href="#services" class="btn-outline">Explore Services</a>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <svg class="bike-graphic" viewBox="0 0 520 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="260" cy="340" rx="220" ry="14" fill="rgba(200,245,58,0.06)"/>
-      <ellipse cx="260" cy="338" rx="140" ry="8" fill="rgba(0,0,0,0.4)"/>
-      <circle cx="148" cy="270" r="82" stroke="#2a3040" stroke-width="10"/>
-      <circle cx="148" cy="270" r="82" stroke="#c8f53a" stroke-width="4" stroke-dasharray="20 12" stroke-linecap="round"/>
-      <circle cx="148" cy="270" r="8" fill="#c8f53a"/>
-      <line x1="148" y1="188" x2="148" y2="352" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="66" y1="270" x2="230" y2="270" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="90" y1="212" x2="206" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="206" y1="212" x2="90" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-      <circle cx="372" cy="270" r="82" stroke="#2a3040" stroke-width="10"/>
-      <circle cx="372" cy="270" r="82" stroke="#c8f53a" stroke-width="4" stroke-dasharray="20 12" stroke-linecap="round"/>
-      <circle cx="372" cy="270" r="8" fill="#c8f53a"/>
-      <line x1="372" y1="188" x2="372" y2="352" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="290" y1="270" x2="454" y2="270" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="314" y1="212" x2="430" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="430" y1="212" x2="314" y2="328" stroke="#2a3040" stroke-width="2.5"/>
-      <line x1="148" y1="270" x2="248" y2="200" stroke="#c8f53a" stroke-width="6" stroke-linecap="round"/>
-      <line x1="148" y1="270" x2="232" y2="220" stroke="#8a9ab5" stroke-width="4" stroke-linecap="round"/>
-      <line x1="248" y1="200" x2="200" y2="120" stroke="#c8f53a" stroke-width="6" stroke-linecap="round"/>
-      <line x1="232" y1="220" x2="198" y2="118" stroke="#8a9ab5" stroke-width="4" stroke-linecap="round"/>
-      <line x1="248" y1="200" x2="310" y2="110" stroke="#c8f53a" stroke-width="8" stroke-linecap="round"/>
-      <line x1="200" y1="118" x2="310" y2="110" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-      <line x1="310" y1="110" x2="372" y2="270" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-      <rect x="300" y="104" width="18" height="32" rx="5" fill="#ff6b35"/>
-      <line x1="248" y1="200" x2="240" y2="108" stroke="#c8f53a" stroke-width="7" stroke-linecap="round"/>
-      <line x1="240" y1="108" x2="238" y2="82" stroke="#8a9ab5" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="232" cy="80" rx="32" ry="7" fill="#2a3040" stroke="#c8f53a" stroke-width="2"/>
-      <line x1="313" y1="110" x2="340" y2="98" stroke="#8a9ab5" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 326 92 Q 340 82 354 90" stroke="#c8f53a" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <circle cx="248" cy="200" r="28" stroke="#ff6b35" stroke-width="5"/>
-      <circle cx="248" cy="200" r="10" fill="#ff6b35" opacity="0.6"/>
-      <line x1="30" y1="220" x2="82" y2="220" stroke="#c8f53a" stroke-width="2" opacity="0.4"/>
-      <line x1="18" y1="238" x2="56" y2="238" stroke="#c8f53a" stroke-width="2" opacity="0.25"/>
-    </svg>
-  </div>
-  <div class="hero-stats">
-    <div class="stat-pill"><div class="stat-num">50+</div><div class="stat-label">Happy Riders</div></div>
-    <div class="stat-pill"><div class="stat-num">3K+</div><div class="stat-label">KMs Guided</div></div>
-    <div class="stat-pill"><div class="stat-num">5★</div><div class="stat-label">Rating</div></div>
-  </div>
-</section>
-
-<div class="sat-banner">
-  <div>
-    <div class="sat-banner-tag">🚴 Weekly Group Event</div>
-    <h3>SATURDAY MORNING RIDE</h3>
-    <p>Every Saturday we roll out together. All levels welcome — beginners to enthusiasts.</p>
-  </div>
-  <div class="sat-details">
-    <div class="sat-detail"><div class="sat-detail-num">30–50</div><div class="sat-detail-label">Kilometers</div></div>
-    <div class="sat-detail"><div class="sat-detail-num">6:30</div><div class="sat-detail-label">Start Time AM</div></div>
-    <div class="sat-detail"><div class="sat-detail-num">Sat</div><div class="sat-detail-label">Every Week</div></div>
-    <a href="#booking" class="btn-primary" style="background:var(--black);color:var(--lime)">Join the Ride →</a>
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Pedal<span>Pulse</span></div>
+    <p class="login-sub">Admin Access — Signed in with Firebase Auth</p>
+    <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="login-btn" id="loginBtn">
+      <span class="login-spinner spinner" id="loginSpinner"></span>
+      <span id="loginBtnText">Login →</span>
+    </button>
+    <p class="login-error" id="loginError" style="display:none"></p>
+    <p style="font-size:0.7rem;color:var(--muted);margin-top:1.2rem;line-height:1.6">
+      Use the email &amp; password you set up in<br>Firebase Authentication console.
+    </p>
   </div>
 </div>
 
-<section id="services">
-  <div class="section-header reveal"><span class="section-tag">What We Offer</span><h2>SERVICES</h2><p>Tailored cycling experiences for every level, available after hours.</p></div>
-  <div class="services-grid">
-    <div class="service-card reveal"><span class="service-icon">🎯</span><h3>Learn to Ride</h3><p>Never ridden a bike before? No problem. Structured beginner sessions that take you from zero to confident cyclist in a safe, encouraging environment.</p><div class="service-price">From KES 1,500 / session</div></div>
-    <div class="service-card reveal"><span class="service-badge">Popular</span><span class="service-icon">⚡</span><h3>Skills Training</h3><p>Gear shifting, hill climbing, cornering, cadence, braking technique. Build real cycling skills with one-on-one coaching tailored to your progress.</p><div class="service-price">From KES 2,000 / session</div></div>
-    <div class="service-card reveal"><span class="service-icon">🗺️</span><h3>Guided Tours</h3><p>Short scenic rides or medium-distance adventures around Nairobi. Customised to your pace and experience level.</p><div class="service-price">From KES 2,500 / tour</div></div>
-    <div class="service-card reveal"><span class="service-badge">Every Sat</span><span class="service-icon">🌅</span><h3>Group Rides</h3><p>Join our Saturday morning group ride. 30–50km depending on weather and group energy. Great for fitness, community, and exploring Nairobi's outskirts.</p><div class="service-price">KES 500 / person</div></div>
-    <div class="service-card reveal"><span class="service-icon">🏋️</span><h3>Fitness Cycling</h3><p>Structured rides designed around your fitness goals. Weight loss, endurance building, or general wellness — we plan and pace it together.</p><div class="service-price">From KES 2,000 / session</div></div>
-    <div class="service-card reveal"><span class="service-icon">🚲</span><h3>Bike Hire</h3><p>Need a bike for the day? Quality road and hybrid bikes available for hire. Helmet and basic gear included.</p><div class="service-price" id="hireFromPrice">From KES 800 / half day</div></div>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo">Pedal<span>Pulse</span></div>
+    <p>Admin Dashboard</p>
   </div>
-</section>
+  <nav class="side-nav">
+    <div class="nav-section">Overview</div>
+    <button class="side-link active" onclick="showPanel('dashboard')"><span class="icon">📊</span> Dashboard</button>
+    <div class="nav-section">Bookings</div>
+    <button class="side-link" onclick="showPanel('bookings')"><span class="icon">📋</span> All Bookings <span class="badge-count" id="pendingBadge" style="display:none">0</span></button>
+    <button class="side-link" onclick="showPanel('pending')"><span class="icon">⏳</span> Pending Approval</button>
+    <div class="nav-section">Manage</div>
+    <button class="side-link" onclick="showPanel('availability')"><span class="icon">📅</span> Availability</button>
+    <button class="side-link" onclick="showPanel('bikes')"><span class="icon">🚲</span> Bikes Fleet</button>
+    <div class="nav-section">Site</div>
+    <button class="side-link" onclick="window.open('index.html','_blank')"><span class="icon">🌐</span> View Website ↗</button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="side-link" id="logoutBtn" style="color:var(--danger)"><span class="icon">🚪</span> Logout</button>
+  </div>
+</aside>
 
-<section id="bikes">
-  <div class="section-header reveal"><span class="section-tag">Fleet</span><h2>HIRE A BIKE</h2><p>Quality machines maintained to the highest standard. Gear up and go.</p></div>
-  <div class="bikes-grid" id="bikesGrid"></div>
-</section>
-
-<section id="booking">
-  <div style="max-width:900px;margin:0 auto;">
-    <div class="section-header reveal">
-      <span class="section-tag">Reserve Your Slot</span>
-      <h2>BOOK A SESSION</h2>
-      <p>Pick a date, choose a slot, and fill in your details. I'll confirm within 24 hours.</p>
-      <div id="fbStatusBadge" style="margin-top:0.8rem"></div>
+<div class="main">
+  <div class="topbar">
+    <h1 id="panelTitle">Dashboard</h1>
+    <div class="topbar-right">
+      <span class="fb-pill" id="fbPill">🟢 Firebase Live</span>
+      <span class="admin-pill" id="adminEmail">Admin</span>
+      <button class="logout-btn" id="logoutBtn2">Logout</button>
     </div>
-    <div class="booking-grid reveal">
-      <div class="calendar-wrap">
-        <div class="cal-header">
-          <button class="cal-nav" id="prevMonth">‹</button>
-          <h4 id="calTitle"></h4>
-          <button class="cal-nav" id="nextMonth">›</button>
-        </div>
-        <div class="cal-days-header">
-          <div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label" style="color:var(--orange)">Sat</div>
-        </div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--lime)"></div> Available</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> Saturday Ride</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div> Unavailable</div>
-        </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-row">
+        <div class="stat-card highlight"><div class="label">Total Bookings</div><div class="num" id="stat-total">—</div><div class="sub">All time</div></div>
+        <div class="stat-card warn"><div class="label">Pending Review</div><div class="num" id="stat-pending">—</div><div class="sub">Awaiting confirmation</div></div>
+        <div class="stat-card"><div class="label">Confirmed</div><div class="num" id="stat-confirmed">—</div><div class="sub">Upcoming sessions</div></div>
+        <div class="stat-card"><div class="label">This Week</div><div class="num" id="stat-week">—</div><div class="sub">New bookings</div></div>
       </div>
-      <div class="booking-form-wrap">
-        <h4 id="selectedDateTitle">Select a Date →</h4>
-        <div id="slotsSection" style="display:none">
-          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;letter-spacing:0.5px;text-transform:uppercase;">Available Times</p>
-          <div class="slots-list" id="slotsList"></div>
-        </div>
-        <div id="noSlots" class="no-slots" style="display:none"><p>No availability on this date. Try another day!</p></div>
-        <div id="bookingFormArea" style="display:none">
-          <hr style="border-color:var(--border);margin:1rem 0;">
-          <div class="form-grid-2">
-            <div class="form-group"><label>Full Name</label><input type="text" id="fname" placeholder="Your name"></div>
-            <div class="form-group"><label>Phone</label><input type="tel" id="fphone" placeholder="+254..."></div>
-          </div>
-          <div class="form-group"><label>Email</label><input type="email" id="femail" placeholder="you@email.com"></div>
-          <div class="form-group">
-            <label>Service</label>
-            <select id="fservice">
-              <option value="">— Select Service —</option>
-              <option>Learn to Ride</option><option>Skills Training</option><option>Guided Tour</option>
-              <option>Group Ride (Saturday)</option><option>Fitness Cycling</option>
-              <option>Bike Hire — Road Racer</option><option>Bike Hire — Hybrid Cruiser</option><option>Bike Hire — Mountain Bike</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Notes (optional)</label><textarea id="fnotes" rows="2" placeholder="Any special requests..."></textarea></div>
-          <button class="btn-primary" id="submitBtn" style="width:100%;margin-top:0.5rem">Submit Booking Request</button>
-        </div>
+      <div class="table-wrap">
+        <div class="table-header"><h3>Recent Bookings</h3><button class="btn-lime" onclick="showPanel('bookings')" style="padding:0.4rem 1rem;font-size:0.8rem">View All →</button></div>
+        <table><thead><tr><th>Ref</th><th>Client</th><th>Date & Time</th><th>Service</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="recentTableBody"><tr><td colspan="6"><div class="empty-state"><span class="icon">⏳</span><p>Loading...</p></div></td></tr></tbody></table>
       </div>
     </div>
-  </div>
-</section>
 
-<section id="about">
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <h2>NAIROBI RUNS ON<br><em>WHEEL POWER</em></h2>
-      <p>Hi, I'm Eliud — a passionate cyclist bringing professional riding experiences to Nairobi's streets, hills, and trails. After years of riding through this city's incredible landscapes, I'm sharing that love one ride at a time.</p>
-      <p>From beginners discovering the joy of two wheels, to seasoned riders wanting to explore further — PedalPulse is your guide through Nairobi's cycling terrain.</p>
-      <ul class="about-bullets">
-        <li>Professionally guided routes through Nairobi and surroundings</li>
-        <li>All skill levels welcome — beginner to advanced</li>
-        <li>After-hours availability for working professionals</li>
-        <li>Quality bikes and safety gear provided</li>
-        <li>Small group sizes for personalised attention</li>
-      </ul>
+    <!-- ALL BOOKINGS -->
+    <div class="panel" id="panel-bookings">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>All Bookings</h3>
+          <div class="filter-row">
+            <select id="filterStatus" onchange="renderBookingsTable()"><option value="">All Statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="rejected">Rejected</option></select>
+            <input type="text" id="filterSearch" placeholder="Search name / ref..." oninput="renderBookingsTable()">
+          </div>
+        </div>
+        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone</th><th>Date & Time</th><th>Service</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="allBookingsBody"></tbody></table>
+      </div>
     </div>
-    <div class="about-visual reveal">
-      <div class="about-card"><div class="big-num">5+</div><div class="label">Years Riding Nairobi's Roads</div></div>
-      <div class="about-card"><div class="big-num">30+</div><div class="label">Routes Mapped</div></div>
-      <div class="about-card"><div class="big-num">100%</div><div class="label">After-hours Available</div></div>
+
+    <!-- PENDING -->
+    <div class="panel" id="panel-pending">
+      <div class="notice info">⏳ Confirm a booking to lock the slot and notify the rider.</div>
+      <div class="table-wrap">
+        <div class="table-header"><h3>Pending Approval</h3></div>
+        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone / Email</th><th>Date & Time</th><th>Service</th><th>Notes</th><th>Actions</th></tr></thead>
+        <tbody id="pendingBody"></tbody></table>
+      </div>
     </div>
+
+    <!-- AVAILABILITY -->
+    <div class="panel" id="panel-availability">
+      <div class="notice warn">💡 Default slots: Weekdays 5PM & 6:30PM · Saturdays 6:30AM group ride + 9AM private. Customise below.</div>
+      <div class="avail-container">
+        <div class="avail-cal-wrap">
+          <div class="a-cal-header">
+            <button class="a-cal-nav" id="aCalPrev">‹</button>
+            <h4 id="aCalTitle"></h4>
+            <button class="a-cal-nav" id="aCalNext">›</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px">
+            <div class="a-cal-day-label">Su</div><div class="a-cal-day-label">Mo</div><div class="a-cal-day-label">Tu</div><div class="a-cal-day-label">We</div><div class="a-cal-day-label">Th</div><div class="a-cal-day-label">Fr</div><div class="a-cal-day-label" style="color:var(--orange)">Sa</div>
+          </div>
+          <div class="a-cal-grid" id="aCalGrid"></div>
+        </div>
+        <div class="avail-edit">
+          <h3 id="availDateTitle">Select a date to edit</h3>
+          <div id="availEditorArea" style="display:none">
+            <label class="block-day-check"><input type="checkbox" id="blockDayCheck"> Block this entire day (unavailable)</label>
+            <p style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Time Slots</p>
+            <div class="slot-editor" id="slotEditorList"></div>
+            <button class="add-slot-btn" id="addSlotBtn">+ Add Time Slot</button>
+            <div style="display:flex;gap:0.8rem;margin-top:1.5rem">
+              <button class="btn-lime" id="saveAvailBtn">Save Changes</button>
+              <button class="btn-neutral" id="resetAvailBtn">Reset to Default</button>
+            </div>
+          </div>
+          <div id="availPlaceholder"><div class="empty-state"><span class="icon">📅</span><p>Click a date to manage its availability</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIKES -->
+    <div class="panel" id="panel-bikes">
+      <div class="notice info">🚲 Edit hire prices and availability. Type a new price, click <b>Save price</b>, and the website updates.</div>
+      <div class="table-wrap">
+        <div class="table-header"><h3>Bike Fleet</h3></div>
+        <table><thead><tr><th>Bike</th><th>Type</th><th>Half Day</th><th>Full Day</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="bikesTableBody"></tbody></table>
+      </div>
+    </div>
+
   </div>
-</section>
+</div>
 
-<section id="locations">
-  <div class="section-header reveal"><span class="section-tag">Where We Ride</span><h2>NAIROBI & BEYOND</h2><p>Operating across Nairobi and its metropolitan areas.</p></div>
-  <div class="locations-grid">
-    <div class="location-card reveal"><div class="location-icon">🏙️</div><h4>Nairobi CBD</h4><p>Urban rides, city exploration, evening circuits</p></div>
-    <div class="location-card reveal"><div class="location-icon">🌿</div><h4>Karura Forest</h4><p>Scenic forest trails and nature rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">⛰️</div><h4>Ngong Hills</h4><p>Hill climb challenges, weekend adventure rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">🛣️</div><h4>Thika Road Corridor</h4><p>Long-distance training routes, endurance rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">🌅</div><h4>Athi River</h4><p>Flat terrain, speed training, sunrise rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">🏘️</div><h4>Karen & Langata</h4><p>Quiet roads, neighbourhood loops, family rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">🌄</div><h4>Limuru Hills</h4><p>Scenic highland routes, cooler elevation rides</p></div>
-    <div class="location-card reveal"><div class="location-icon">📍</div><h4>Custom Routes</h4><p>Tell me your location, we'll figure it out</p></div>
-  </div>
-</section>
-
-<footer>
-  <div><div class="footer-logo">Pedal<span>Pulse</span></div><p style="margin-top:0.4rem;">Nairobi's Premier Cycling Experience</p></div>
-  <p>📞 +254 737 672 504 &nbsp;|&nbsp; ✉️ pedalpulse.com@gmail.com</p>
-  <div class="footer-links"><a href="#services">Services</a><a href="#bikes">Hire a Bike</a><a href="#booking">Book</a><a href="admin.html">Admin</a></div>
-</footer>
-
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="confirmModal">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
   <div class="modal">
-    <button class="modal-close" id="closeModal">×</button>
-    <h3>Confirm Booking</h3>
-    <p>Review your details before submitting.</p>
-    <div class="confirm-details" id="confirmDetails"></div>
-    <div style="display:flex;gap:1rem">
-      <button style="flex:1;background:transparent;color:var(--white);padding:0.7rem;border:1.5px solid var(--border);border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;" id="cancelConfirm">Edit</button>
-      <button class="btn-primary" id="finalConfirm" style="flex:1">Confirm →</button>
-    </div>
+    <h3>Booking Details</h3>
+    <div id="modalContent"></div>
+    <div class="modal-actions" id="modalActions"></div>
   </div>
 </div>
 
-<!-- SUCCESS MODAL -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal" style="text-align:center">
-    <span class="success-icon">✅</span>
-    <h3>Request Submitted!</h3>
-    <p>Your booking request has been sent to Eliud. He'll confirm your slot within 24 hours via phone or email.</p>
-    <p style="margin-top:0.5rem;font-family:'Barlow Condensed',sans-serif;color:var(--lime);font-size:1.1rem;font-weight:700;" id="bookingRefDisplay"></p>
-    <button class="btn-primary" id="closeSuccess" style="width:100%;margin-top:1.5rem">Awesome, Thanks!</button>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDK + App Logic -->
+<script src="firebase-config.js"></script>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailjs-config.js"></script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, where, getDocs, onSnapshot, serverTimestamp }
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, doc, updateDoc, onSnapshot, query, orderBy, setDoc, deleteDoc, getDocs, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ── Load config ──────────────────────────────────────────────
   const cfg = window.FIREBASE_CONFIG;
-  let db;
-  let fbOnline = false;
-
-  function setFbStatus(online) {
-    fbOnline = online;
-    const badge = document.getElementById('fbStatusBadge');
-    if (badge) {
-      badge.innerHTML = online
-        ? '<span class="fb-status connected">🟢 Live — bookings sync in real time</span>'
-        : '<span class="fb-status offline">⚠️ Firebase not configured — running in offline demo mode</span>';
-    }
-  }
+  let app, auth, db, fbOnline = false;
+  let allBookings = [];
 
   try {
     if (!cfg || cfg.apiKey === 'REPLACE_WITH_YOUR_API_KEY') throw new Error('not configured');
-    const app = initializeApp(cfg);
+    app = initializeApp(cfg);
+    auth = getAuth(app);
     db = getFirestore(app);
-    setFbStatus(true);
+    fbOnline = true;
   } catch(e) {
-    console.warn('Firebase not configured. Running in localStorage demo mode.', e.message);
-    setFbStatus(false);
+    console.warn('Firebase not configured:', e.message);
+    document.getElementById('fbPill').textContent = '⚠️ Demo Mode';
+    document.getElementById('fbPill').className = 'fb-pill offline';
   }
 
-  // ── Data helpers ──────────────────────────────────────────────
-  function getAvailability() {
-    return JSON.parse(localStorage.getItem('pp_availability') || '{}');
+  // ── AUTH ──────────────────────────────────────────────────────
+  if (fbOnline) {
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminEmail').textContent = user.email;
+        initAdmin();
+      } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+      }
+    });
+  } else {
+    // Demo mode: skip auth
+    const demoPass = 'pedalpulse2024';
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      if (document.getElementById('loginPass').value === demoPass) {
+        document.getElementById('loginScreen').style.display = 'none';
+        initAdmin();
+      } else {
+        document.getElementById('loginError').textContent = 'Invalid credentials.';
+        document.getElementById('loginError').style.display = 'block';
+      }
+    });
   }
 
-  async function getBookingsForDate(dateStr) {
-    if (fbOnline) {
-      try {
-        const q = query(collection(db, 'bookings'), where('date', '==', dateStr));
-        const snap = await getDocs(q);
-        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      } catch(e) { console.error(e); }
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    if (!fbOnline) return;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginError');
+    const spinner = document.getElementById('loginSpinner');
+    const btnText = document.getElementById('loginBtnText');
+
+    spinner.classList.add('show'); btnText.textContent = 'Signing in...';
+    err.style.display = 'none';
+
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      err.textContent = e.code === 'auth/invalid-credential' ? 'Invalid email or password.' : e.message;
+      err.style.display = 'block';
     }
-    return JSON.parse(localStorage.getItem('pp_bookings') || '[]').filter(b => b.date === dateStr);
-  }
+    spinner.classList.remove('show'); btnText.textContent = 'Login →';
+  });
 
-  async function saveBooking(booking) {
+  document.getElementById('loginEmail').addEventListener('keypress', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+  document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+
+  function doLogout() {
+    if (fbOnline && auth) signOut(auth);
+    else location.reload();
+  }
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  document.getElementById('logoutBtn2').addEventListener('click', doLogout);
+
+  // ── INIT ──────────────────────────────────────────────────────
+  function initAdmin() {
     if (fbOnline) {
-      const docRef = await addDoc(collection(db, 'bookings'), {
-        ...booking,
-        status: 'pending',
-        createdAt: serverTimestamp()
+      // Real-time listener on bookings collection
+      const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+      onSnapshot(q, snap => {
+        allBookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        updateStats();
+        renderDashboardTable();
+        renderBookingsTable();
+        renderPendingTable();
+        updatePendingBadge();
       });
-      return docRef.id;
     } else {
-      const bookings = JSON.parse(localStorage.getItem('pp_bookings') || '[]');
-      bookings.push({ ...booking, status: 'pending', created: new Date().toISOString() });
-      localStorage.setItem('pp_bookings', JSON.stringify(bookings));
-      return booking.ref;
+      allBookings = JSON.parse(localStorage.getItem('pp_bookings') || '[]').reverse();
+      updateStats(); renderDashboardTable(); renderBookingsTable(); renderPendingTable(); updatePendingBadge();
     }
+    loadBikes();
   }
 
-  // ── Calendar ──────────────────────────────────────────────────
-  const today = new Date(); today.setHours(0,0,0,0);
-  let currentYear = today.getFullYear(), currentMonth = today.getMonth();
-  let selectedDate = null, selectedSlot = null;
+  // ── STATS ─────────────────────────────────────────────────────
+  function updateStats() {
+    const now = new Date();
+    const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+    document.getElementById('stat-total').textContent = allBookings.length;
+    document.getElementById('stat-pending').textContent = allBookings.filter(b => b.status === 'pending').length;
+    document.getElementById('stat-confirmed').textContent = allBookings.filter(b => b.status === 'confirmed').length;
+    document.getElementById('stat-week').textContent = allBookings.filter(b => {
+      const ts = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.created || 0);
+      return ts >= weekStart;
+    }).length;
+  }
+
+  function updatePendingBadge() {
+    const count = allBookings.filter(b => b.status === 'pending').length;
+    const badge = document.getElementById('pendingBadge');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? '' : 'none';
+  }
+
+  // ── TABLE RENDERING ───────────────────────────────────────────
+  function bookingRow(b, mode = 'standard') {
+    const statusBadge = `<span class="status-badge ${b.status}">${b.status}</span>`;
+    const actions = `
+      ${b.status === 'pending' ? `<button class="action-btn confirm" onclick="quickAction('${b.id || b.ref}','confirmed')">✓ Confirm</button>` : ''}
+      ${b.status === 'pending' ? `<button class="action-btn reject" onclick="quickAction('${b.id || b.ref}','rejected')">✗ Reject</button>` : ''}
+      <button class="action-btn" onclick="openDetail('${b.id || b.ref}')">View</button>
+    `;
+    if (mode === 'pending') return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.phone}<br><span style="font-size:0.72rem;color:var(--muted)">${b.email||'—'}</span></td><td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td><td>${b.service}</td><td style="font-size:0.8rem;color:var(--muted)">${b.notes||'—'}</td><td>${actions}</td></tr>`;
+    if (mode === 'all') return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.phone}</td><td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td><td>${b.service}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
+    return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.date} ${b.time}</td><td>${b.service}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
+  }
+
+  function renderDashboardTable() {
+    const tbody = document.getElementById('recentTableBody');
+    const recent = allBookings.slice(0, 8);
+    tbody.innerHTML = recent.length === 0
+      ? '<tr><td colspan="6"><div class="empty-state"><span class="icon">📭</span><p>No bookings yet</p></div></td></tr>'
+      : recent.map(b => bookingRow(b)).join('');
+  }
+
+  function renderBookingsTable() {
+    const tbody = document.getElementById('allBookingsBody');
+    const sf = document.getElementById('filterStatus')?.value || '';
+    const ss = document.getElementById('filterSearch')?.value.toLowerCase() || '';
+    let list = allBookings;
+    if (sf) list = list.filter(b => b.status === sf);
+    if (ss) list = list.filter(b => (b.name||'').toLowerCase().includes(ss) || (b.ref||'').toLowerCase().includes(ss) || (b.service||'').toLowerCase().includes(ss));
+    tbody.innerHTML = list.length === 0
+      ? '<tr><td colspan="7"><div class="empty-state"><span class="icon">🔍</span><p>No matches</p></div></td></tr>'
+      : list.map(b => bookingRow(b, 'all')).join('');
+  }
+
+  function renderPendingTable() {
+    const tbody = document.getElementById('pendingBody');
+    const list = allBookings.filter(b => b.status === 'pending');
+    tbody.innerHTML = list.length === 0
+      ? '<tr><td colspan="7"><div class="empty-state"><span class="icon">🎉</span><p>All caught up!</p></div></td></tr>'
+      : list.map(b => bookingRow(b, 'pending')).join('');
+  }
+
+  // ── ACTIONS ───────────────────────────────────────────────────
+  window.quickAction = async function(id, status) {
+    try {
+      if (fbOnline) {
+        await updateDoc(doc(db, 'bookings', id), { status, updatedAt: serverTimestamp() });
+
+        // Send rider confirmation email + WhatsApp to admin when confirmed
+        if (status === 'confirmed') {
+          const b = allBookings.find(x => (x.id || x.ref) === id);
+
+          // 1. Email the rider (if they provided an email)
+          if (b && b.email && window.EMAILJS_CONFIG) {
+            emailjs.send(
+              window.EMAILJS_CONFIG.serviceId,
+              window.EMAILJS_CONFIG.riderTemplateId,
+              {
+                rider_name:   b.name,
+                rider_email:  b.email,
+                booking_ref:  b.ref,
+                booking_date: b.date,
+                booking_time: b.time,
+                service:      b.service,
+                notes:        b.notes || 'None',
+                admin_phone:  '+254 737 672 504',
+                admin_email:  window.EMAILJS_CONFIG.adminEmail,
+              }
+            ).catch(e => console.warn('Rider email failed:', e));
+          }
+
+          // 2. Open WhatsApp with pre-filled confirmation message for admin to send
+          if (b) {
+            const msg = encodeURIComponent(
+              `✅ *PedalPulse Booking CONFIRMED*\n` +
+              `─────────────────\n` +
+              `*Ref:* ${b.ref}\n` +
+              `*Rider:* ${b.name}\n` +
+              `*Phone:* ${b.phone}\n` +
+              `*Date:* ${b.date} @ ${b.time}\n` +
+              `*Service:* ${b.service}\n` +
+              `─────────────────\n` +
+              `Confirmation email sent to rider. Ride on! 🚴`
+            );
+            // Small delay so the toast shows first, then open WhatsApp
+            setTimeout(() => {
+              window.open(`https://wa.me/254737672504?text=${msg}`, '_blank');
+            }, 800);
+          }
+        }
+      } else {
+        const bookings = JSON.parse(localStorage.getItem('pp_bookings') || '[]');
+        const idx = bookings.findIndex(b => b.ref === id);
+        if (idx > -1) { bookings[idx].status = status; localStorage.setItem('pp_bookings', JSON.stringify(bookings)); }
+        allBookings = bookings.reverse();
+        updateStats(); renderDashboardTable(); renderBookingsTable(); renderPendingTable(); updatePendingBadge();
+      }
+      showToast(status === 'confirmed' ? '✅ Booking confirmed!' : '❌ Booking rejected');
+    } catch(e) { showToast('Error: ' + e.message, true); }
+  };
+
+  window.openDetail = function(id) {
+    const b = allBookings.find(x => (x.id || x.ref) === id);
+    if (!b) return;
+    const ts = b.createdAt?.toDate ? b.createdAt.toDate().toLocaleString() : (b.created ? new Date(b.created).toLocaleString() : '—');
+    document.getElementById('modalContent').innerHTML = `
+      <div class="detail-row"><span class="k">Reference</span><span class="ref-code">${b.ref}</span></div>
+      <div class="detail-row"><span class="k">Status</span><span class="status-badge ${b.status}">${b.status}</span></div>
+      <div class="detail-row"><span class="k">Name</span><span>${b.name}</span></div>
+      <div class="detail-row"><span class="k">Phone</span><span>${b.phone}</span></div>
+      <div class="detail-row"><span class="k">Email</span><span>${b.email||'—'}</span></div>
+      <div class="detail-row"><span class="k">Date</span><span>${b.date}</span></div>
+      <div class="detail-row"><span class="k">Time</span><span>${b.time}</span></div>
+      <div class="detail-row"><span class="k">Service</span><span>${b.service}</span></div>
+      <div class="detail-row"><span class="k">Notes</span><span>${b.notes||'—'}</span></div>
+      <div class="detail-row"><span class="k">Submitted</span><span>${ts}</span></div>
+    `;
+    const acts = document.getElementById('modalActions');
+    acts.innerHTML = '';
+    if (b.status === 'pending') {
+      const cb = document.createElement('button'); cb.className = 'btn-success'; cb.textContent = '✓ Confirm';
+      cb.onclick = () => { quickAction(b.id||b.ref, 'confirmed'); closeModal(); }; acts.appendChild(cb);
+      const rb = document.createElement('button'); rb.className = 'btn-danger-btn'; rb.textContent = '✗ Reject';
+      rb.onclick = () => { quickAction(b.id||b.ref, 'rejected'); closeModal(); }; acts.appendChild(rb);
+    }
+    const cl = document.createElement('button'); cl.className = 'btn-neutral'; cl.textContent = 'Close';
+    cl.onclick = closeModal; acts.appendChild(cl);
+    document.getElementById('detailModal').classList.add('active');
+  };
+
+  function closeModal() { document.getElementById('detailModal').classList.remove('active'); }
+  document.getElementById('detailModal').addEventListener('click', e => { if(e.target === document.getElementById('detailModal')) closeModal(); });
+
+  // ── AVAILABILITY ──────────────────────────────────────────────
+  let aCalYear = new Date().getFullYear(), aCalMonth = new Date().getMonth();
+  let selAvailDate = null;
+
+  function getAvailability() { return JSON.parse(localStorage.getItem('pp_availability') || '{}'); }
+  function saveAvailability(a) { localStorage.setItem('pp_availability', JSON.stringify(a)); }
 
   function getDefaultSlots(dateStr) {
-    const avail = getAvailability();
-    if (avail[dateStr] !== undefined) return avail[dateStr];
     const day = new Date(dateStr + 'T00:00:00').getDay();
     if (day === 6) return [{ time: '06:30 AM', label: 'Saturday Group Ride' }, { time: '09:00 AM', label: 'Private Session' }];
     if (day === 0) return [
@@ -540,241 +581,183 @@
     return [{ time: '05:00 PM', label: 'After-work Session' }, { time: '06:30 PM', label: 'Evening Session' }];
   }
 
-  function renderCalendar() {
-    const grid = document.getElementById('calGrid');
+  function renderAdminCalendar() {
+    const grid = document.getElementById('aCalGrid');
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    document.getElementById('calTitle').textContent = `${months[currentMonth]} ${currentYear}`;
+    document.getElementById('aCalTitle').textContent = `${months[aCalMonth]} ${aCalYear}`;
     grid.innerHTML = '';
 
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+    const firstDay = new Date(aCalYear, aCalMonth, 1).getDay();
+    const daysInMonth = new Date(aCalYear, aCalMonth + 1, 0).getDate();
+    const daysInPrev = new Date(aCalYear, aCalMonth, 0).getDate();
+    const avail = getAvailability();
+    const today = new Date(); today.setHours(0,0,0,0);
 
-    for (let i = firstDay - 1; i >= 0; i--) {
-      const d = document.createElement('div');
-      d.className = 'cal-day other-month'; d.textContent = daysInPrev - i; grid.appendChild(d);
-    }
+    for (let i = firstDay - 1; i >= 0; i--) { const d = document.createElement('div'); d.className='a-cal-day other-month'; d.textContent=daysInPrev-i; grid.appendChild(d); }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const dObj = new Date(dateStr + 'T00:00:00');
-      const d = document.createElement('div');
-      d.className = 'cal-day'; d.textContent = day;
-
-      if (dObj < today) { d.classList.add('past'); }
-      else {
-        const slots = getDefaultSlots(dateStr);
-        if (slots.length > 0) d.classList.add('has-slots');
-        if (dObj.getDay() === 6) d.classList.add('saturday');
-      }
-      if (dObj.toDateString() === today.toDateString()) d.classList.add('today');
-      if (dateStr === selectedDate) d.classList.add('selected');
-      d.addEventListener('click', () => selectDate(dateStr));
+      const dateStr = `${aCalYear}-${String(aCalMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const d = document.createElement('div'); d.className='a-cal-day'; d.textContent=day;
+      const av = avail[dateStr];
+      if (av !== undefined) { d.classList.add(av===null||(Array.isArray(av)&&av.length===0) ? 'blocked' : 'has-custom'); }
+      if (allBookings.some(b => b.date === dateStr && b.status !== 'cancelled')) d.classList.add('has-bookings');
+      if (new Date(dateStr+'T00:00:00').toDateString() === today.toDateString()) d.classList.add('today');
+      if (dateStr === selAvailDate) d.classList.add('selected');
+      d.addEventListener('click', () => selectAvailDate(dateStr));
       grid.appendChild(d);
     }
 
-    const total = firstDay + daysInMonth;
-    const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
-    for (let i = 1; i <= rem; i++) {
-      const d = document.createElement('div'); d.className = 'cal-day other-month'; d.textContent = i; grid.appendChild(d);
-    }
+    const rem = (firstDay + daysInMonth) % 7;
+    for (let i = 1; i <= (rem===0?0:7-rem); i++) { const d=document.createElement('div'); d.className='a-cal-day other-month'; d.textContent=i; grid.appendChild(d); }
   }
 
-  async function selectDate(dateStr) {
-    selectedDate = dateStr; selectedSlot = null;
-    renderCalendar();
+  document.getElementById('aCalPrev').addEventListener('click', () => { aCalMonth--; if(aCalMonth<0){aCalMonth=11;aCalYear--;} renderAdminCalendar(); });
+  document.getElementById('aCalNext').addEventListener('click', () => { aCalMonth++; if(aCalMonth>11){aCalMonth=0;aCalYear++;} renderAdminCalendar(); });
 
-    const d = new Date(dateStr + 'T00:00:00');
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    document.getElementById('selectedDateTitle').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+  function selectAvailDate(dateStr) {
+    selAvailDate = dateStr; renderAdminCalendar();
+    const d = new Date(dateStr+'T00:00:00');
+    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    document.getElementById('availDateTitle').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${dateStr.split('-')[0]}`;
+    const avail=getAvailability(), av=avail[dateStr];
+    const isBlocked = av!==undefined && (av===null||(Array.isArray(av)&&av.length===0));
+    document.getElementById('availEditorArea').style.display='block';
+    document.getElementById('availPlaceholder').style.display='none';
+    document.getElementById('blockDayCheck').checked=isBlocked;
+    renderSlotEditor(isBlocked?[]:(av!==undefined?av:getDefaultSlots(dateStr)));
+  }
 
-    const slots = getDefaultSlots(dateStr);
-    const slotsList = document.getElementById('slotsList');
-    const slotsSection = document.getElementById('slotsSection');
-    const noSlots = document.getElementById('noSlots');
-    const formArea = document.getElementById('bookingFormArea');
-
-    slotsList.innerHTML = ''; formArea.style.display = 'none';
-
-    if (!slots || slots.length === 0) {
-      slotsSection.style.display = 'none'; noSlots.style.display = 'block'; return;
-    }
-
-    slotsSection.style.display = 'block'; noSlots.style.display = 'none';
-
-    // Load bookings for this date
-    const bookedSlots = await getBookingsForDate(dateStr);
-
-    slots.forEach(slot => {
-      const booking = bookedSlots.find(b => b.time === slot.time && (b.status === 'confirmed' || b.status === 'pending'));
-      const isBooked = !!booking;
-      const item = document.createElement('div');
-      item.className = 'slot-item' + (isBooked ? ' booked' : '');
-      item.innerHTML = `
-        <div>
-          <div class="slot-time">${slot.time}</div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${slot.label}</div>
-        </div>
-        <span class="slot-status ${isBooked ? (booking.status || 'booked') : 'available'}">${isBooked ? (booking.status || 'booked') : 'available'}</span>
-      `;
-      if (!isBooked) {
-        item.addEventListener('click', () => {
-          document.querySelectorAll('.slot-item').forEach(el => el.classList.remove('selected'));
-          item.classList.add('selected');
-          selectedSlot = slot.time;
-          formArea.style.display = 'block';
-        });
-      }
-      slotsList.appendChild(item);
+  function renderSlotEditor(slots) {
+    const list = document.getElementById('slotEditorList'); list.innerHTML='';
+    (slots||[]).forEach(slot => {
+      const row=document.createElement('div'); row.className='slot-editor-row';
+      row.innerHTML=`<input type="text" placeholder="Time e.g. 06:30 AM" value="${slot.time||''}" class="slot-time-input"><input type="text" placeholder="Label" value="${slot.label||''}" class="slot-label-input"><button class="remove-slot">×</button>`;
+      row.querySelector('.remove-slot').addEventListener('click',()=>row.remove());
+      list.appendChild(row);
     });
   }
 
-  document.getElementById('prevMonth').addEventListener('click', () => {
-    currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar();
-  });
-  document.getElementById('nextMonth').addEventListener('click', () => {
-    currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar();
+  document.getElementById('addSlotBtn').addEventListener('click', () => {
+    const row=document.createElement('div'); row.className='slot-editor-row';
+    row.innerHTML='<input type="text" placeholder="Time e.g. 06:30 AM" class="slot-time-input"><input type="text" placeholder="Label" class="slot-label-input"><button class="remove-slot">×</button>';
+    row.querySelector('.remove-slot').addEventListener('click',()=>row.remove());
+    document.getElementById('slotEditorList').appendChild(row);
   });
 
-  // ── Booking submission ─────────────────────────────────────────
-  document.getElementById('submitBtn').addEventListener('click', () => {
-    const name = document.getElementById('fname').value.trim();
-    const phone = document.getElementById('fphone').value.trim();
-    const email = document.getElementById('femail').value.trim();
-    const service = document.getElementById('fservice').value;
-    if (!name || !phone || !service || !selectedDate || !selectedSlot) {
-      alert('Please fill in all required fields and select a time slot.'); return;
+  document.getElementById('blockDayCheck').addEventListener('change', function() {
+    const op=this.checked?'0.3':'1', pe=this.checked?'none':'';
+    document.getElementById('slotEditorList').style.opacity=op;
+    document.getElementById('slotEditorList').style.pointerEvents=pe;
+    document.getElementById('addSlotBtn').style.opacity=op;
+    document.getElementById('addSlotBtn').style.pointerEvents=pe;
+  });
+
+  document.getElementById('saveAvailBtn').addEventListener('click', async () => {
+    if (!selAvailDate) return;
+    const avail=getAvailability();
+    if (document.getElementById('blockDayCheck').checked) { avail[selAvailDate]=[]; }
+    else {
+      const tis=document.querySelectorAll('.slot-time-input'), lis=document.querySelectorAll('.slot-label-input');
+      const slots=[];
+      tis.forEach((ti,i)=>{ if(ti.value.trim()) slots.push({time:ti.value.trim(),label:lis[i]?.value.trim()||''}); });
+      avail[selAvailDate]=slots;
     }
-    const details = document.getElementById('confirmDetails');
-    details.innerHTML = `
-      <div class="confirm-row"><span class="key">Date</span><span class="val">${selectedDate}</span></div>
-      <div class="confirm-row"><span class="key">Time</span><span class="val">${selectedSlot}</span></div>
-      <div class="confirm-row"><span class="key">Service</span><span class="val">${service}</span></div>
-      <div class="confirm-row"><span class="key">Name</span><span class="val">${name}</span></div>
-      <div class="confirm-row"><span class="key">Phone</span><span class="val">${phone}</span></div>
-      ${email ? `<div class="confirm-row"><span class="key">Email</span><span class="val">${email}</span></div>` : ''}
-    `;
-    document.getElementById('confirmModal').classList.add('active');
-  });
-
-  document.getElementById('closeModal').addEventListener('click', () => document.getElementById('confirmModal').classList.remove('active'));
-  document.getElementById('cancelConfirm').addEventListener('click', () => document.getElementById('confirmModal').classList.remove('active'));
-
-  document.getElementById('finalConfirm').addEventListener('click', async () => {
-    const btn = document.getElementById('finalConfirm');
-    btn.innerHTML = '<span class="spinner"></span> Saving...';
-    btn.disabled = true;
-
-    const ref = 'PP' + Date.now().toString().slice(-6);
-    const booking = {
-      ref,
-      date: selectedDate,
-      time: selectedSlot,
-      name: document.getElementById('fname').value.trim(),
-      phone: document.getElementById('fphone').value.trim(),
-      email: document.getElementById('femail').value.trim(),
-      service: document.getElementById('fservice').value,
-      notes: document.getElementById('fnotes').value.trim(),
-    };
-
-    try {
-      await saveBooking(booking);
-
-      // WhatsApp alert to admin on new booking submission
-      const waMsg = encodeURIComponent(
-        `🔔 *New PedalPulse Booking!*\n` +
-        `─────────────────\n` +
-        `*Ref:* ${booking.ref}\n` +
-        `*Rider:* ${booking.name}\n` +
-        `*Phone:* ${booking.phone}\n` +
-        `*Date:* ${booking.date} @ ${booking.time}\n` +
-        `*Service:* ${booking.service}\n` +
-        `*Notes:* ${booking.notes || 'None'}\n` +
-        `─────────────────\n` +
-        `👉 Log in to confirm or reject:\n` +
-        `https://pedal-pulse.github.io/pedal-pulse/admin.html`
-      );
-      setTimeout(() => {
-        window.open(`https://wa.me/254737672504?text=${waMsg}`, '_blank');
-      }, 600);
-
-      document.getElementById('confirmModal').classList.remove('active');
-      document.getElementById('bookingRefDisplay').textContent = `Reference: ${ref}`;
-      document.getElementById('successModal').classList.add('active');
-      // Reset
-      ['fname','fphone','femail','fnotes'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('fservice').value = '';
-      selectedSlot = null;
-      selectDate(selectedDate);
-    } catch(e) {
-      alert('Something went wrong. Please try again.');
-      console.error(e);
+    saveAvailability(avail);
+    if (fbOnline) {
+      try {
+        await setDoc(doc(db,'availability',selAvailDate), { slots: avail[selAvailDate], updatedAt: serverTimestamp() });
+      } catch(e) { console.warn('Firestore avail save failed (rules?)', e); }
     }
-
-    btn.innerHTML = 'Confirm →'; btn.disabled = false;
+    renderAdminCalendar();
+    showToast('✅ Availability saved!');
   });
 
-  document.getElementById('closeSuccess').addEventListener('click', () => document.getElementById('successModal').classList.remove('active'));
+  document.getElementById('resetAvailBtn').addEventListener('click', () => {
+    if (!selAvailDate) return;
+    const avail=getAvailability(); delete avail[selAvailDate]; saveAvailability(avail);
+    selectAvailDate(selAvailDate); renderAdminCalendar();
+    showToast('↩️ Reset to default');
+  });
 
-  // ── Scroll reveal ───────────────────────────────────────────────
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 60); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-
-  // ── Bike fleet (prices come from Firestore; defaults used if offline) ──
+  // ── BIKES (stored in Firestore so the public site shows the same prices) ──
   const DEFAULT_BIKES = [
-    {id:'road',   name:'Road Racer',     halfDay:1200, fullDay:2000, status:'available', emoji:'🚴', specs:['700c','21-Speed','Lightweight']},
-    {id:'hybrid', name:'Hybrid Cruiser', halfDay:800,  fullDay:1400, status:'available', emoji:'🚵', specs:['Comfort','18-Speed','All-terrain']},
-    {id:'mtb',    name:'Mountain Bike',  halfDay:1000, fullDay:1700, status:'available', emoji:'🏔️', specs:['27.5"','Suspension','Trail-ready']},
+    {id:'road',   name:'Road Racer',     type:'Road',   halfDay:1200, fullDay:2000, status:'available', emoji:'🚴', specs:['700c','21-Speed','Lightweight']},
+    {id:'hybrid', name:'Hybrid Cruiser', type:'Hybrid', halfDay:800,  fullDay:1400, status:'available', emoji:'🚵', specs:['Comfort','18-Speed','All-terrain']},
+    {id:'mtb',    name:'Mountain Bike',  type:'MTB',    halfDay:1000, fullDay:1700, status:'available', emoji:'🏔️', specs:['27.5"','Suspension','Trail-ready']},
   ];
-
-  function renderBikes(fleet) {
-    const grid = document.getElementById('bikesGrid');
-    grid.innerHTML = fleet.map(b => {
-      const ok = b.status === 'available';
-      return `<div class="bike-card visible" style="${ok ? '' : 'opacity:0.55'}">
-        <div class="bike-img">${b.emoji}</div>
-        <div class="bike-info">
-          <h3>${b.name}</h3>
-          <div class="bike-specs">${(b.specs||[]).map(s => `<span class="spec-tag">${s}</span>`).join('')}</div>
-          <div class="bike-price-row">
-            <div>
-              <div class="bike-price">KES ${Number(b.halfDay).toLocaleString()} <span>/ half day</span></div>
-              <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">KES ${Number(b.fullDay).toLocaleString()} / full day</div>
-            </div>
-            ${ok ? '<a href="#booking" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem">Hire</a>'
-                 : '<span class="spec-tag" style="color:var(--danger)">Unavailable</span>'}
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    const prices = fleet.map(b => Number(b.halfDay)).filter(n => !isNaN(n));
-    if (prices.length) document.getElementById('hireFromPrice').textContent = `From KES ${Math.min(...prices).toLocaleString()} / half day`;
-  }
+  let fleet = DEFAULT_BIKES.map(b => ({...b}));
 
   async function loadBikes() {
-    let fleet = DEFAULT_BIKES;
     if (fbOnline) {
       try {
         const snap = await getDocs(collection(db, 'bikes'));
-        if (!snap.empty) {
+        if (snap.empty) {
+          // First time: seed Firestore with the defaults
+          await Promise.all(DEFAULT_BIKES.map(b => setDoc(doc(db, 'bikes', b.id), b)));
+        } else {
           const saved = {};
           snap.docs.forEach(d => saved[d.id] = d.data());
           fleet = DEFAULT_BIKES.map(b => ({...b, ...(saved[b.id] || {})}));
         }
-      } catch(e) { console.warn('Using default bike prices:', e.message); }
+      } catch(e) { console.warn('Could not load bikes:', e); showToast('Could not load bikes: ' + e.message, true); }
     }
-    renderBikes(fleet);
+    renderBikesTable();
   }
 
-  renderCalendar();
-  loadBikes();
-</script>
+  function renderBikesTable() {
+    document.getElementById('bikesTableBody').innerHTML = fleet.map(b => `<tr>
+      <td>${b.emoji} ${b.name}</td>
+      <td>${b.type}</td>
+      <td>KES <input type="number" min="0" step="50" id="half-${b.id}" value="${b.halfDay}" style="width:90px;background:var(--deep);border:1px solid var(--border);color:var(--white);padding:0.35rem 0.5rem;border-radius:5px;font-family:inherit"></td>
+      <td>KES <input type="number" min="0" step="50" id="full-${b.id}" value="${b.fullDay}" style="width:90px;background:var(--deep);border:1px solid var(--border);color:var(--white);padding:0.35rem 0.5rem;border-radius:5px;font-family:inherit"></td>
+      <td><span class="status-badge ${b.status==='available'?'confirmed':'pending'}">${b.status}</span></td>
+      <td>
+        <button class="action-btn confirm" onclick="saveBikePrice('${b.id}')">Save price</button>
+        <button class="action-btn" onclick="toggleBike('${b.id}')">${b.status==='available'?'Mark Unavailable':'Mark Available'}</button>
+      </td>
+    </tr>`).join('');
+  }
 
-<!-- Load Firebase config BEFORE module script needs it -->
-<script src="firebase-config.js"></script>
+  async function persistBike(b) {
+    if (fbOnline) await setDoc(doc(db, 'bikes', b.id), b);
+  }
+
+  window.saveBikePrice = async function(id) {
+    const b = fleet.find(x => x.id === id); if (!b) return;
+    const half = parseInt(document.getElementById('half-' + id).value, 10);
+    const full = parseInt(document.getElementById('full-' + id).value, 10);
+    if (isNaN(half) || isNaN(full) || half < 0 || full < 0) { showToast('Enter valid prices', true); return; }
+    b.halfDay = half; b.fullDay = full;
+    try { await persistBike(b); showToast('✅ ' + b.name + ' prices updated'); }
+    catch(e) { showToast('Error: ' + e.message, true); }
+    renderBikesTable();
+  };
+
+  window.toggleBike = async function(id) {
+    const b = fleet.find(x => x.id === id); if (!b) return;
+    b.status = b.status === 'available' ? 'unavailable' : 'available';
+    try { await persistBike(b); showToast('Bike status updated'); }
+    catch(e) { showToast('Error: ' + e.message, true); }
+    renderBikesTable();
+  };
+
+  // ── PANEL NAV ─────────────────────────────────────────────────
+  window.showPanel=function(name){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));
+    document.getElementById('panel-'+name).classList.add('active');
+    const titles={dashboard:'Dashboard',bookings:'All Bookings',pending:'Pending Approval',availability:'Manage Availability',bikes:'Bike Fleet'};
+    document.getElementById('panelTitle').textContent=titles[name]||name;
+    document.querySelectorAll('.side-link').forEach(l=>{if(l.getAttribute('onclick')&&l.getAttribute('onclick').includes(`'${name}'`))l.classList.add('active');});
+    if(name==='bookings')renderBookingsTable();
+    if(name==='pending')renderPendingTable();
+    if(name==='bikes')loadBikes();
+    if(name==='availability')renderAdminCalendar();
+  };
+
+  // ── TOAST ─────────────────────────────────────────────────────
+  function showToast(msg,error=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(error?' error':'');setTimeout(()=>t.className='toast',3000);}
+</script>
 </body>
 </html>

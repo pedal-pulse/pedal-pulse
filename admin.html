@@ -190,6 +190,7 @@
     <div class="nav-section">Manage</div>
     <button class="side-link" onclick="showPanel('availability')"><span class="icon">📅</span> Availability</button>
     <button class="side-link" onclick="showPanel('bikes')"><span class="icon">🚲</span> Bikes Fleet</button>
+    <button class="side-link" onclick="showPanel('reviews')"><span class="icon">⭐</span> Reviews <span class="badge-count" id="reviewsBadge" style="display:none">0</span></button>
     <div class="nav-section">Site</div>
     <button class="side-link" onclick="window.open('index.html','_blank')"><span class="icon">🌐</span> View Website ↗</button>
   </nav>
@@ -234,17 +235,17 @@
             <input type="text" id="filterSearch" placeholder="Search name / ref..." oninput="renderBookingsTable()">
           </div>
         </div>
-        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone</th><th>Date & Time</th><th>Service</th><th>Status</th><th>Actions</th></tr></thead>
+        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone</th><th>Date & Time</th><th>Service</th><th>Deposit</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="allBookingsBody"></tbody></table>
       </div>
     </div>
 
     <!-- PENDING -->
     <div class="panel" id="panel-pending">
-      <div class="notice info">⏳ Confirm a booking to lock the slot and notify the rider.</div>
+      <div class="notice info">⏳ Check each M-Pesa deposit code against your M-Pesa SMS before you confirm. Confirming locks the slot.</div>
       <div class="table-wrap">
         <div class="table-header"><h3>Pending Approval</h3></div>
-        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone / Email</th><th>Date & Time</th><th>Service</th><th>Notes</th><th>Actions</th></tr></thead>
+        <table><thead><tr><th>Ref</th><th>Client</th><th>Phone / Email</th><th>Date & Time</th><th>Service</th><th>Deposit</th><th>Notes</th><th>Actions</th></tr></thead>
         <tbody id="pendingBody"></tbody></table>
       </div>
     </div>
@@ -278,6 +279,16 @@
           </div>
           <div id="availPlaceholder"><div class="empty-state"><span class="icon">📅</span><p>Click a date to manage its availability</p></div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="panel" id="panel-reviews">
+      <div class="notice info">⭐ Reviews only appear on the website after you approve them.</div>
+      <div class="table-wrap">
+        <div class="table-header"><h3>Rider Reviews</h3></div>
+        <table><thead><tr><th>Date</th><th>Rider</th><th>Rating</th><th>Review</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="reviewsBody"></tbody></table>
       </div>
     </div>
 
@@ -408,6 +419,7 @@
       updateStats(); renderDashboardTable(); renderBookingsTable(); renderPendingTable(); updatePendingBadge();
     }
     loadBikes();
+    startReviews();
   }
 
   // ── STATS ─────────────────────────────────────────────────────
@@ -431,16 +443,31 @@
   }
 
   // ── TABLE RENDERING ───────────────────────────────────────────
+  // Escape anything a visitor typed before putting it into the page
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function depositCell(b) {
+    if (!b.mpesaCode) return '<span style="color:var(--muted);font-size:0.78rem">None</span>';
+    const me = b.id || b.ref;
+    const dups = allBookings.filter(x => x.mpesaCode === b.mpesaCode && (x.id || x.ref) !== me).length;
+    return `<span class="ref-code">${esc(b.mpesaCode)}</span><br><span style="font-size:0.72rem;color:var(--muted)">KES ${esc((Number(b.deposit) || 0).toLocaleString())}</span>` +
+      (dups ? `<br><span class="status-badge rejected" style="margin-top:4px">⚠ code used ${dups + 1}x</span>` : '');
+  }
+
   function bookingRow(b, mode = 'standard') {
-    const statusBadge = `<span class="status-badge ${b.status}">${b.status}</span>`;
+    const id = esc(b.id || b.ref);
+    const statusBadge = `<span class="status-badge ${esc(b.status)}">${esc(b.status)}</span>`;
     const actions = `
-      ${b.status === 'pending' ? `<button class="action-btn confirm" onclick="quickAction('${b.id || b.ref}','confirmed')">✓ Confirm</button>` : ''}
-      ${b.status === 'pending' ? `<button class="action-btn reject" onclick="quickAction('${b.id || b.ref}','rejected')">✗ Reject</button>` : ''}
-      <button class="action-btn" onclick="openDetail('${b.id || b.ref}')">View</button>
+      ${b.status === 'pending' ? `<button class="action-btn confirm" onclick="quickAction('${id}','confirmed')">✓ Confirm</button>` : ''}
+      ${b.status === 'pending' ? `<button class="action-btn reject" onclick="quickAction('${id}','rejected')">✗ Reject</button>` : ''}
+      <button class="action-btn" onclick="openDetail('${id}')">View</button>
     `;
-    if (mode === 'pending') return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.phone}<br><span style="font-size:0.72rem;color:var(--muted)">${b.email||'—'}</span></td><td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td><td>${b.service}</td><td style="font-size:0.8rem;color:var(--muted)">${b.notes||'—'}</td><td>${actions}</td></tr>`;
-    if (mode === 'all') return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.phone}</td><td>${b.date}<br><span style="font-size:0.72rem;color:var(--muted)">${b.time}</span></td><td>${b.service}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
-    return `<tr><td><span class="ref-code">${b.ref}</span></td><td>${b.name}</td><td>${b.date} ${b.time}</td><td>${b.service}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
+    const when = `${esc(b.date)}<br><span style="font-size:0.72rem;color:var(--muted)">${esc(b.time)}</span>`;
+    if (mode === 'pending') return `<tr><td><span class="ref-code">${esc(b.ref)}</span></td><td>${esc(b.name)}</td><td>${esc(b.phone)}<br><span style="font-size:0.72rem;color:var(--muted)">${esc(b.email || '—')}</span></td><td>${when}</td><td>${esc(b.service)}</td><td>${depositCell(b)}</td><td style="font-size:0.8rem;color:var(--muted)">${esc(b.notes || '—')}</td><td>${actions}</td></tr>`;
+    if (mode === 'all') return `<tr><td><span class="ref-code">${esc(b.ref)}</span></td><td>${esc(b.name)}</td><td>${esc(b.phone)}</td><td>${when}</td><td>${esc(b.service)}</td><td>${depositCell(b)}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
+    return `<tr><td><span class="ref-code">${esc(b.ref)}</span></td><td>${esc(b.name)}</td><td>${esc(b.date)} ${esc(b.time)}</td><td>${esc(b.service)}</td><td>${statusBadge}</td><td>${actions}</td></tr>`;
   }
 
   function renderDashboardTable() {
@@ -459,7 +486,7 @@
     if (sf) list = list.filter(b => b.status === sf);
     if (ss) list = list.filter(b => (b.name||'').toLowerCase().includes(ss) || (b.ref||'').toLowerCase().includes(ss) || (b.service||'').toLowerCase().includes(ss));
     tbody.innerHTML = list.length === 0
-      ? '<tr><td colspan="7"><div class="empty-state"><span class="icon">🔍</span><p>No matches</p></div></td></tr>'
+      ? '<tr><td colspan="8"><div class="empty-state"><span class="icon">🔍</span><p>No matches</p></div></td></tr>'
       : list.map(b => bookingRow(b, 'all')).join('');
   }
 
@@ -467,7 +494,7 @@
     const tbody = document.getElementById('pendingBody');
     const list = allBookings.filter(b => b.status === 'pending');
     tbody.innerHTML = list.length === 0
-      ? '<tr><td colspan="7"><div class="empty-state"><span class="icon">🎉</span><p>All caught up!</p></div></td></tr>'
+      ? '<tr><td colspan="8"><div class="empty-state"><span class="icon">🎉</span><p>All caught up!</p></div></td></tr>'
       : list.map(b => bookingRow(b, 'pending')).join('');
   }
 
@@ -535,16 +562,17 @@
     if (!b) return;
     const ts = b.createdAt?.toDate ? b.createdAt.toDate().toLocaleString() : (b.created ? new Date(b.created).toLocaleString() : '—');
     document.getElementById('modalContent').innerHTML = `
-      <div class="detail-row"><span class="k">Reference</span><span class="ref-code">${b.ref}</span></div>
-      <div class="detail-row"><span class="k">Status</span><span class="status-badge ${b.status}">${b.status}</span></div>
-      <div class="detail-row"><span class="k">Name</span><span>${b.name}</span></div>
-      <div class="detail-row"><span class="k">Phone</span><span>${b.phone}</span></div>
-      <div class="detail-row"><span class="k">Email</span><span>${b.email||'—'}</span></div>
-      <div class="detail-row"><span class="k">Date</span><span>${b.date}</span></div>
-      <div class="detail-row"><span class="k">Time</span><span>${b.time}</span></div>
-      <div class="detail-row"><span class="k">Service</span><span>${b.service}</span></div>
-      <div class="detail-row"><span class="k">Notes</span><span>${b.notes||'—'}</span></div>
-      <div class="detail-row"><span class="k">Submitted</span><span>${ts}</span></div>
+      <div class="detail-row"><span class="k">Reference</span><span class="ref-code">${esc(b.ref)}</span></div>
+      <div class="detail-row"><span class="k">Status</span><span class="status-badge ${esc(b.status)}">${esc(b.status)}</span></div>
+      <div class="detail-row"><span class="k">Name</span><span>${esc(b.name)}</span></div>
+      <div class="detail-row"><span class="k">Phone</span><span>${esc(b.phone)}</span></div>
+      <div class="detail-row"><span class="k">Email</span><span>${esc(b.email || '—')}</span></div>
+      <div class="detail-row"><span class="k">Date</span><span>${esc(b.date)}</span></div>
+      <div class="detail-row"><span class="k">Time</span><span>${esc(b.time)}</span></div>
+      <div class="detail-row"><span class="k">Service</span><span>${esc(b.service)}</span></div>
+      <div class="detail-row"><span class="k">Deposit</span><span style="text-align:right">${depositCell(b)}</span></div>
+      <div class="detail-row"><span class="k">Notes</span><span>${esc(b.notes || '—')}</span></div>
+      <div class="detail-row"><span class="k">Submitted</span><span>${esc(ts)}</span></div>
     `;
     const acts = document.getElementById('modalActions');
     acts.innerHTML = '';
@@ -680,6 +708,59 @@
     showToast('↩️ Reset to default');
   });
 
+  // ── REVIEWS ───────────────────────────────────────────────────
+  let allReviews = [];
+
+  function startReviews() {
+    if (!fbOnline) { renderReviews(); return; }
+    onSnapshot(query(collection(db, 'reviews'), orderBy('createdAt', 'desc')), snap => {
+      allReviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderReviews();
+      const pending = allReviews.filter(r => r.status !== 'approved').length;
+      const badge = document.getElementById('reviewsBadge');
+      badge.textContent = pending;
+      badge.style.display = pending > 0 ? '' : 'none';
+    }, err => console.warn('Reviews listener:', err.message));
+  }
+
+  function renderReviews() {
+    const tbody = document.getElementById('reviewsBody');
+    if (!allReviews.length) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><span class="icon">⭐</span><p>No reviews yet</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = allReviews.map(r => {
+      const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString() : '—';
+      const n = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 0)));
+      const approved = r.status === 'approved';
+      const id = esc(r.id);
+      return `<tr>
+        <td>${esc(when)}</td>
+        <td>${esc(r.name)}${r.service ? `<br><span style="font-size:0.72rem;color:var(--muted)">${esc(r.service)}</span>` : ''}</td>
+        <td style="color:var(--lime);white-space:nowrap">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</td>
+        <td style="max-width:340px;font-size:0.82rem;line-height:1.5">${esc(r.text)}</td>
+        <td><span class="status-badge ${approved ? 'confirmed' : 'pending'}">${approved ? 'approved' : 'pending'}</span></td>
+        <td>${approved
+          ? `<button class="action-btn" onclick="reviewAction('${id}','unapprove')">Hide</button>`
+          : `<button class="action-btn confirm" onclick="reviewAction('${id}','approve')">✓ Approve</button>`}
+          <button class="action-btn reject" onclick="reviewAction('${id}','delete')">Delete</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.reviewAction = async function(id, action) {
+    try {
+      if (action === 'delete') {
+        if (!confirm('Delete this review permanently?')) return;
+        await deleteDoc(doc(db, 'reviews', id));
+        showToast('Review deleted');
+      } else {
+        await updateDoc(doc(db, 'reviews', id), { status: action === 'approve' ? 'approved' : 'pending' });
+        showToast(action === 'approve' ? '✅ Review is now live on the site' : 'Review hidden from the site');
+      }
+    } catch (e) { showToast('Error: ' + e.message, true); }
+  };
+
   // ── BIKES (stored in Firestore so the public site shows the same prices) ──
   const DEFAULT_BIKES = [
     {id:'road',   name:'Road Racer',     type:'Road',   halfDay:1200, fullDay:2000, status:'available', emoji:'🚴', specs:['700c','21-Speed','Lightweight']},
@@ -747,7 +828,7 @@
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));
     document.getElementById('panel-'+name).classList.add('active');
-    const titles={dashboard:'Dashboard',bookings:'All Bookings',pending:'Pending Approval',availability:'Manage Availability',bikes:'Bike Fleet'};
+    const titles={dashboard:'Dashboard',bookings:'All Bookings',pending:'Pending Approval',availability:'Manage Availability',bikes:'Bike Fleet',reviews:'Rider Reviews'};
     document.getElementById('panelTitle').textContent=titles[name]||name;
     document.querySelectorAll('.side-link').forEach(l=>{if(l.getAttribute('onclick')&&l.getAttribute('onclick').includes(`'${name}'`))l.classList.add('active');});
     if(name==='bookings')renderBookingsTable();
